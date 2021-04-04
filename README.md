@@ -13,10 +13,10 @@ assertions (as a homogeneous framework that allows static and dynamic verificati
 multiparadigm constructs (meta-programming, higher-order, mutables, concurrency, functions, etc.) and interfacing with foreign code.
 The system implements some advanced features such as separate and incremental compilation, global program analysis and static debugging and optimization (via source to source program transformation, CiaoPP preprocessor), a build automation system, documentation generator, debugger, and (Emacs-based) development environment.
 
-WEBSITE: http://ciao-lang.org/
+[WEBSITE]: http://ciao-lang.org/
 
 ### Documentation
-WEBSITE: http://ciao-lang.org/documentation.html
+[WEBSITE]: http://ciao-lang.org/documentation.html
 
 ### Instalation
-WEBSITE: http://cliplab.org/logalg/doc/instalar_ciao.pdf
+[WEBSITE]: http://cliplab.org/logalg/doc/instalar_ciao.pdf
