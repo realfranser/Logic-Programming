@@ -1,0 +1,900 @@
+% :- module(_,_,[]).           % For pure LP, depth-first search rule
+:- module(_,_,['bf/bfall']).   % For pure LP, breadth-first search rule, all predicates
+% :- module(_,_,[bf]).         % For pure LP, breadth-first for selected predicates (with <-)
+% :- module(_,_,['bf/afall']). % 
+
+
+% -------------------------------------------------------------------
+% First program: pets database.
+
+%% pet(atm::x) {
+%%     animal(x); 
+%%     barks(x);
+%%             }
+%% pet(atm::x) {
+%%     animal(x); 
+%%     meows(x);
+%%             }
+%%     
+
+pet(X) :-
+    animal(X),
+    barks(X).
+pet(X) :-
+    animal(X),
+    meows(X).
+
+animal(spot).
+animal(barry).
+animal(hobbes).
+
+barks(spot).
+meows(barry).
+roars(hobbes).
+
+% Some queries:
+% pet(spot).
+% pet(X).
+
+% -------------------------------------------------------------------
+% Family database:
+
+father_of(john, peter).
+father_of(john, mary).
+father_of(peter, michael). 
+
+mother_of(mary, david).
+
+grandfather_of(L,M) :- father_of(L,N), father_of(N,M).
+grandfather_of(X,Y) :- father_of(X,Z), mother_of(Z,Y).  
+
+% Some queries:
+%
+% father_of(john,peter).    father_of(john,david).
+% father_of(john,X).        grandfather_of(X,michael).
+% grandfather_of(X,Y).      grandfather_of(X,X).
+
+%% father_of(john, peter).
+%% father_of(john, mary).
+%% father_of(peter, michael). 
+%% 
+%% mother_of(mary, david).
+parent(X,Y) :- father_of(X,Y).
+parent(X,Y) :- mother_of(X,Y).
+
+ancestor(X,Y) :- parent(X,Y).
+ancestor(X,Y) :- parent(X,Z), ancestor(Z,Y).
+
+
+% queries: ancestor(john,michael). (Is John ancestor of michael?)
+%          ancestor(john,elisabeth). (Is john ancestor of elisabeth?)
+%          ancestor(john,X). (John's successors)
+%          ancestor(X,elisabeth). (Elisabeth's ancestors)
+%          ancestor(X,michael). (Michael's ancestors)
+
+% Exercises:
+
+related(X,Y) :- ancestor(Z,X), ancestor(Z,Y).
+% queries: related(peter,mary).
+%          related(peter,david).
+%          related(mary,elisabeth).
+%          related(michael,mary).
+%          related(peter,X).
+%          related(john,peter). (john is not related to peter!)
+
+ancestor2(X,X).
+ancestor2(X,Y) :- parent(X,Z), ancestor2(Z,Y).
+
+related2(X,Y) :- ancestor2(Z,X), ancestor2(Z,Y).
+% queries: related2(john,peter). (it works!)
+%          related2(peter,X).    (duplicated answers!)
+
+
+% -------------------------------------------------------------------
+% Circuit:
+
+resistor(power,n1).
+resistor(power,n2). 
+
+transistor(n2,ground,n1).
+transistor(n3,n4,n2).
+transistor(n5,ground,n4).
+
+% -------------------------------------------------------------------
+% Circuit theory:
+
+inverter(Input,Output) :- 
+   transistor(Input,ground,Output), 
+   resistor(power,Output).
+
+nand_gate(Input1,Input2,Output) :-
+   transistor(Input1,X,Output),
+   transistor(Input2,ground,X), 
+   resistor(power,Output).
+
+and_gate(Input1,Input2,Output) :-
+   nand_gate(Input1,Input2,X), 
+   inverter(X, Output).
+
+% Some queries:
+% and_gate(In1,In2,Out).
+% nand_gate(In1,In2,Out).
+% inverter(In,Out).
+
+% -------------------------------------------------------------------
+% Course info:
+course(complog,Time,Lecturer, Location) :-
+    Time = t(wed,18:30,20:30),
+    Lecturer = lect('M.','Hermenegildo'),
+    Location = loc(new,5102).
+
+% Some queries:
+% course(complog,Time, A, B).
+% course(complog,Time, _, _).
+
+% -------------------------------------------------------------------
+% Circuit (with structure):
+%% named_resistor(res(P1,P2),P1,P2) :- resistor(P1,P2).
+%% named_transistor(trans(P1,P2,P3),P1,P2,P3) :- transistor(P1,P2,P3).
+
+named_resistor(r1,power,n1).
+named_resistor(r2,power,n2). 
+
+named_transistor(t1,n2,ground,n1).
+named_transistor(t2,n3,n4,n2).
+named_transistor(t3,n5,ground,n4).
+
+named_inverter(inv(T,R),Input,Output) :-
+    named_transistor(T,Input,ground,Output),
+    named_resistor(R,power,Output). 
+
+named_nand_gate(nand(T1,T2,R),Input1,Input2,Output) :-
+    named_transistor(T1,Input1,X,Output),
+    named_transistor(T2,Input2,ground,X),
+    named_resistor(R,power,Output). 
+
+named_and_gate(and(N,I),Input1,Input2,Output) :-
+    named_nand_gate(N,Input1,Input2,X),
+    named_inverter(I,X,Output).
+
+% Some queries:
+% named_inverter(Inv,I,O).
+% named_and_gate(G,In1,In2,Out).
+% named_resistor(R1,P1,P2).
+% named_transistor(T1,P1,P2,P3).
+
+% -------------------------------------------------------------------
+% Relational database:
+
+person(brown,20,male).                 
+person(jones,21,female).	       
+person(smith,36,male).   	       
+
+person2(cabeza,33,male).    
+person2(bueno,39,male).     
+person2(jones,21,female).   
+
+lived_in(brown,london,15).
+lived_in(brown,york,5).
+lived_in(jones,paris,21).
+lived_in(smith,brussels,15).
+lived_in(smith,santander,5).
+
+% Union:
+all_persons(Name,Age,Sex) :- 
+    person(Name,Age,Sex).
+all_persons(Name,Age,Sex) :- 
+    person2(Name,Age,Sex).
+% Query: all_persons(Name,Age,Sex).
+
+% Difference:
+difference(Name,Age,Sex) :- 
+    person(Name,Age,Sex), 
+    \+ person2(Name,Age,Sex).
+difference(Name,Age,Sex) :- 
+    person2(Name,Age,Sex),
+    \+ person(Name,Age,Sex).
+% Query: difference(Name,Age,Sex).
+
+% Cartesian Product:
+person_X_lived_in(Name1,Age,Sex,Name2,Town,Years) :- 
+    person(Name1,Age,Sex), 
+    lived_in(Name2,Town,Years).
+% Query: person_X_lived_in(Name1,Age,Sex,Name2,Town,Years).
+
+% Projection:
+city(C) :- 
+    lived_in(_,C,_).
+% Query: city(C).
+
+% Selection:
+underage_person(Name,Age,Sex) :- 
+    person(Name,Age,Sex), 
+    Age < 21.
+% Query: underage_person(Name,Age,Sex).
+
+% Intersection:
+person_lived_in(Name,Age,Sex,Town,Years) :-
+    person(Name,Age,Sex), 
+    lived_in(Name,Town,Years).
+% Query: person_lived_in(Name,Age,Sex,Town,Years).
+
+% Join:
+person_joinName_person2(Name,Age,Sex) :-
+    person(Name,Age,Sex), 
+    person2(Name,_Age2,_Sex2).
+
+% Query: person_joinName_person2(Name,Age,Sex).
+
+% -------------------------------------------------------------------
+% Types:
+
+weekday('Monday').
+weekday('Tuesday').
+weekday('Wednesday').
+weekday('Thursday').
+weekday('Friday').
+weekday('Saturday').
+weekday('Sunday').
+
+day_of_month(1).
+day_of_month(2).
+% ...
+day_of_month(31).
+
+date(date(W,D)) :- weekday(W), day_of_month(D).
+
+% Sample queries: 
+% date(D).
+
+% -------------------------------------------------------------------
+% Recursive Types:
+
+nat_num(0).
+nat_num(s(X)) :- nat_num(X).
+
+%% :- op(500,fy,-). % <- predefined in system
+
+pint(X)  :- nat_num(X).
+pint(-X) :- nat_num(X).
+
+less_or_equal(0,X) :- nat_num(X).
+less_or_equal(s(X),s(Y)) :- less_or_equal(X,Y).
+
+ %% Multiple uses: 
+ %% less_or_equal(s(0),s(s(0))).
+ %% less_or_equal(X,0).
+ %% 
+ %% Multiple solutions:
+ %% less_or_equal(X,s(0)).
+ %% less_or_equal(s(s(0)),Y).
+
+
+less(0,s(X)) :- nat_num(X).
+less(s(X),s(Y)) :- less(X,Y).
+
+less_or_equal_pairs(pair(0,X)) :- nat_num(X).
+less_or_equal_pairs(pair(s(X),s(Y))) :- less_or_equal_pairs(pair(X,Y)).
+
+%% =<(0,X) :- nat_num(X).
+%% =<(s(X),s(Y)) :- =<(X,Y).
+
+%% 0   =<  X   :-  nat_num(X).
+%% s(X) =< s(Y) :-  X =< Y.
+
+plus(0,Y,Y) :- nat_num(Y).
+plus(s(X),Y,s(Z)) :- plus(X,Y,Z).
+
+ %% Multiple uses: 
+ %% plus(s(s(0)),s(0),Z).
+ %% plus(s(s(0)),Y,s(0)).
+ %% plus(s(0),Y,s(s(s(0)))).
+ %%
+ %% Multiple solutions: 
+ %% plus(X,Y,s(s(s(0)))).
+
+
+%% plus(X,0,X) :- nat_num(X).
+%% plus(X,s(Y),s(Z)) :- plus(X,Y,Z).
+
+% -------------------------------------------------------------------
+times(0,Y,0) :- nat_num(Y).
+times(s(X),Y,Z) :- plus(W,Y,Z), times(X,Y,W).
+
+%% times(s(s(0)), s(s(0)), Y).
+%%% ---> In top pevel: ?- op(500,fy,s). -->
+%% times(s s 0, s s 0, Y).
+%% times(s s 0, s s 0, s s 0).
+%% times(s s 0, Y, s s 0).
+%% times(Y, s s 0, s s 0).
+% -------------------------------------------------------------------
+
+% -------------------------------------------------------------------
+square(X,Y) :- times(X,X,Y).
+
+%% square(s s 0, Y).
+%% square(X, s s s s 0 ).
+%% square(X, Y).
+% -------------------------------------------------------------------
+
+factorial(0, 0).
+factorial(s(0),s(0)).
+factorial(s(N),FN1) :- 
+    nat_num(N),
+    less_or_equal(s(0),N),
+    factorial(N,FN),
+    times(s(N),FN,FN1).
+
+% factorial(s s s 0, Z).
+% factorial(Z,s s s s s s 0).
+% -------------------------------------------------------------------
+
+exp(0, X, s(0)) :- nat_num(X).
+exp(s(N),X,Y) :- exp(N,X,W), times(X,W,Y). 
+
+ %% exp(s(s(0)),s(s(0)),Y).
+ %% exp(s(s(0)),s(s(s(0))),Y).
+ %% exp(s(s(s(0))),s(s(0)),Y).
+
+% -------------------------------------------------------------------
+
+mod(X,Y,Z) :- 
+    less(Z,Y),
+    plus(W,Z,X),
+    times(Y,_Q,W).
+
+mod2(X,Y,X) :- 
+    less(X,Y).
+mod2(X,Y,Z) :- 
+    plus(X1,Y,X),
+    mod2(X1,Y,Z).
+
+%% mod(s s s s s s s s s 0, s s s s 0, Z).  and ;
+% -------------------------------------------------------------------
+
+ackermann(0,N,s(N)).
+ackermann(s(M),0,Val) :-  
+    ackermann(M,s(0),Val).
+ackermann(s(M),s(N),Val) :- 
+    ackermann(s(M),N,Val1),
+    ackermann(M,Val1,Val).
+
+% ackermann(s s 0, s s s 0, X). 
+% ackermann(s s 0, s s s 0, s s s s s s s s s 0). 
+% ackermann(s s 0, Y, s s s s s s s s s 0).
+% ackermann(X, s s s 0, s s s s s s s s s 0).
+% -------------------------------------------------------------------
+
+% -------------------------------------------------------------------
+%%% Functional notation:
+:- use_package(fsyntax).
+:- fun_eval(defined(true)). % Evaluate functors defined as functions
+% :- fun_eval(arith(true)). % Evaluate arithmetic functors
+% :- use_package(functional). 
+% -------------------------------------------------------------------
+
+%% nat(0).
+%% nat(s(X) :- nat(X).
+%% --> 
+%% nat := 0.
+%% nat := s(X) :- nat(X).
+%% --> 
+%% nat := 0.
+%% nat := s(~nat).
+%% -->
+%% :- fun_eval(defined(true)). % Evaluate functors defiend as funtions
+%% nat := 0.
+%% nat := s(nat).
+%% --> 
+:- op(500,fy,s).
+%% nat := 0.
+%% nat := s nat.
+
+nat := 0 | s nat.
+
+sum( 0 ,X) := X :- nat(X).
+sum(s X,Y) := s ~sum(X,Y).
+
+:- fun_eval ackmann/2.
+
+ackmann(  0,   N) := s N.
+ackmann(s M,   0) := ackmann(M, s 0).
+ackmann(s M, s N) := ackmann(M, ackmann(s M, N) ).
+
+p(X) :- X = ~ackmann(s s 0, s s s 0).
+
+% ackmann(s s 0, s s s 0, X). 
+% ackmann(s s 0, s s s 0, s s s s s s s s s 0). 
+% ackmann(s s 0, Y, s s s s s s s s s 0).
+% ackmann(X, s s s 0, s s s s s s s s s 0).
+
+% -------------------------------------------------------------------
+
+list([]).
+list([_|Y]) :- list(Y).
+
+% list( [1,2] ).
+% list( .(1, .(2, [] ) ) ).
+
+lst := [] | [_|~lst].
+
+%% In depth-first reversing the order of body literals controls enumeration:
+
+natlist([]).
+natlist([X|Y]) :- 
+    natlist(Y),
+    nat(X).
+
+%% Reverse order of body literals?
+
+nlst := [] | [~nat|nlst].
+
+% -------------------------------------------------------------------
+
+list_member(X,[X|Y]) :-
+    list(Y).
+list_member(X,[_|T]) :- 
+    list_member(X,T).
+%% list_member(X,[X|_]).
+%% list_member(X,[_|T]) :- 
+%%     list_member(X,T).
+
+ %% Queries:
+ %% list_member(b, [a,b,c]).
+ %% list_member(X, [a,b,c]).
+ %% list_member(a, L). % Nice in bfall!
+
+% -------------------------------------------------------------------
+
+mylength([],0).
+mylength([_|T],s(N)) :- 
+    mylength(T,N).
+
+ %% Queries:
+ %% mylength([a, b, c], N).
+ %% mylength(L, s(s(s(0)))).
+ %% mylength(L, 3).
+ %% mylength(L, N).
+ 
+
+% -------------------------------------------------------------------
+
+prefix([],X) :- list(X).
+prefix([X|Xs],[X|Ys]) :- 
+    prefix(Xs,Ys).
+
+% Queries:
+% prefix([a,b], [a,b,c,d]). 
+% prefix([X,Y], [a,b,c,d]).
+% prefix(P, [a,b,c,d]).
+% prefix([a,b], L). 
+% prefix(P, L).
+
+suffix(X,X) :- list(X).
+suffix(X,[_|Ys]) :-
+    suffix(X,Ys).
+
+/* Queries:
+suffix([c,d], [a,b,c,d]). 
+suffix([X,Y], [a,b,c,d]).
+suffix(P, [a,b,c,d]).
+suffix([a,b], L). 
+suffix(P, L).
+*/
+
+sublist(X,Y) :- 
+    suffix(Z,Y),
+    prefix(X,Z).
+
+% Queries:
+% sublist([b,c], [a,b,c]).
+% sublist(X, [a,b,c]).
+% sublist([b,c], [d,a,X,Y]).
+% sublist(X, Y).
+
+
+% Other (equivalent) definition for sublist.
+
+sublist1(X,Y) :- 
+    prefix(Z,Y),
+    suffix(X,Z).
+
+% Other definition for sublist (no repeated solutions).
+
+sublist2([],Ys) :-
+    list(Ys).
+sublist2([Xs|Ts],Ys) :-
+    prefix([Xs|Ts],Ys).
+sublist2([Xs|Ts], [_|Ys]) :-
+    sublist2([Xs|Ts], Ys).
+
+%% sublist2([],Ys) :-
+%%     list(Ys).
+%% sublist2(Xs,Ys) :-
+%%     sublist2b(Xs,Ys).
+%% sublist2b(Xs,Ys) :-
+%%     prefix2(Xs,Ys).
+%% sublist2b(Xs,[_|Ys]) :-
+%%     sublist2b(Xs,Ys).
+%% 
+%% prefix2([X],[X|Xs]) :-
+%%     list(Xs).
+%% prefix2([X|Xs],[X|Ys]) :- 
+%%     prefix2(Xs,Ys).
+
+% -------------------------------------------------------------------
+
+myappend([],L,L) :- 
+    list(L).
+myappend([X|Xs],Ys,[X|Zs]) :- 
+    myappend(Xs,Ys,Zs).
+
+%% Queries:
+%% myappend([a,b], [c], X).
+%% myappend(X, [c], [a,b,c]).
+%% myappend(X, Y, [a,b,c]).
+	
+% -------------------------------------------------------------------
+
+reverse([],[]).
+reverse([X|Xs],Ys) :- 
+    reverse(Xs,Zs),
+    myappend(Zs,[X],Ys).
+
+%% Queries:
+%% reverse([a,b,c],X).
+%% reverse(X,[c,b,a]).
+%% reverse(X,Y).
+% -------------------------------------------------------------------
+
+reverse_acc(Xs,Ys) :- 
+    reverse3(Xs,[],Ys).
+
+reverse3([],Ys,Ys).
+reverse3([X|Xs],Acc,Ys) :-
+    NewAcc=[X|Acc],
+    reverse3(Xs,NewAcc,Ys).
+
+%% Queries:
+%% reverse_acc([a,b,c],X).
+%% reverse_acc(X,[c,b,a]).
+%% reverse_acc(X,Y).
+
+% Cheking execution time: 
+:- use_module(engine(runtime_control),[statistics/2]).
+:- use_module(library(lists),[length/2]).
+
+rev_naive(N,T) :-
+    length(L,N),
+    statistics(walltime, [_,_]),
+    reverse(L,_RL),
+    statistics(walltime, [_,T]).
+rev_acc(N,T) :-
+    length(L,N),
+    statistics(walltime, [_,_]),
+    reverse_acc(L,_RL),
+    statistics(walltime, [_,T]).
+
+% -------------------------------------------------------------------
+
+binary_tree(void).
+binary_tree(tree(_Element,Left,Right)) :- 
+    binary_tree(Left),
+    binary_tree(Right).
+
+%% Queries:
+%% tree_example(T), binary_tree(T).
+%% binary_tree(tree(a, b, c)).
+%% binary_tree(tree(a, [], [])).
+%% binary_tree(T).
+
+binary_t := void | tree(_Element,binary_t,binary_t). 
+
+% -------------------------------------------------------------------
+%% tree_member(X,tree(X,_Left,_Right)).
+
+tree_member(X,tree(X,Left,Right)) :- 
+    binary_tree(Left),
+    binary_tree(Right).
+tree_member(X,tree(_Y,Left,_Right)) :- 
+    tree_member(X,Left). 
+tree_member(X,tree(_Y,_Left,Right)) :- 
+    tree_member(X,Right).
+
+tree_example(  tree( a,
+                   tree( b,
+                         void,
+                         void
+                       ),
+                   tree( c,
+                         tree( b,
+                               void,
+                               void
+                               ),
+                         void
+                       ))).
+
+%% Queries:
+%% tree_example(_T), tree_member(b, _T).
+%% tree_example(_T), tree_member(X, _T).
+%% tree_example(_T), tree_member(e, _T).
+
+tree_mem_f(X) := tree(X,~binary_tree,~binary_tree).
+tree_mem_f(X) := tree(_Y,tree_mem_f(X),_Right).
+tree_mem_f(X) := tree(_Y,_Left,tree_mem_f(X)).
+
+%--------------------------------------------------------------------
+
+pre_order(void, []).
+pre_order(tree(X,Left,Right), Elements) :-
+    pre_order(Left, ElementsLeft),
+    pre_order(Right, ElementsRight),
+    myappend([X|ElementsLeft], ElementsRight, Elements).
+
+in_order(void, []).
+in_order(tree(X,Left,Right), Elements) :-
+    in_order(Left, ElementsLeft),
+    in_order(Right, ElementsRight),
+    myappend(ElementsLeft, [X|ElementsRight], Elements).
+
+post_order(void, []).
+post_order(tree(X,Left,Right), Elements) :-
+    post_order(Left, ElementsLeft),
+    post_order(Right, ElementsRight),
+    myappend(ElementsRight, [X], ElementsRight2),
+    myappend(ElementsLeft, ElementsRight2, Elements).
+	
+%% Queries:
+%% tree_example(_T),pre_order(_T,List).
+%% tree_example(_T),in_order(_T,List).
+%% tree_example(_T),post_order(_T,List).  (node list generation)
+%% post_order(X,[a,b]).                   (tree generation)
+%% tree_example(_T),post_order(_T,[Y|_]). (leftmost leaf)
+% -------------------------------------------------------------------
+
+lt_member(X, [X|Y]) :- list(Y).
+lt_member(X, [_|T]) :- lt_member(X, T).
+
+lt_member(X, tree(X, L, R)) :- binary_tree(L), binary_tree(R).
+lt_member(X, tree(_Y, L, _R)) :- lt_member(X, L). 
+lt_member(X, tree(_Y, _L, R)) :- lt_member(X, R).
+
+%% Queries:
+%% lt_member(M,[1,2,3]).
+%% tree_example(_T), lt_member(M,_T).
+%% But: 
+%% lt_member(M,T).
+%% mixed type!
+
+
+lt_member_separate(X, Y) :- list_member(X, Y).
+lt_member_separate(X, Y) :- tree_member(X, Y).
+
+%% Queries:
+%% lt_member_separate(M,[1,2,3]).
+%% tree_example(_T), lt_member_separate(M,_T).
+%% And: 
+%% lt_member_separate(M,T).
+%% separated types!
+
+%--------------------------------------------------------------------
+
+polynomial(X,X).
+polynomial(Term,_X)  :- 
+    pconstant(Term).
+polynomial(Term1+Term2,X)  :- 
+    polynomial(Term1,X),
+    polynomial(Term2,X). 
+polynomial(Term1-Term2,X)  :- 
+    polynomial(Term1,X), 
+    polynomial(Term2,X).
+polynomial(Term1*Term2,X)  :- 
+    polynomial(Term1,X), 
+    polynomial(Term2,X).
+polynomial(Term1/Term2,X)  :- 
+    polynomial(Term1,X), 
+    pconstant(Term2).
+polynomial(Term1^N,X)  :- 
+    polynomial(Term1,X), 
+    nat_num(N).
+
+pconstant(X) :- nat_num(X).
+pconstant(a).
+pconstant(b).
+pconstant(c).
+
+%% Queries:
+%% polynomial(a * x ^ s(s(0)) + b, x).
+%% polynomial(P, x).
+%% polynomial(    a * x ^ x + b,         x). - No
+
+poly_f(X) := X
+    | ~pconstant
+    | poly_f(X)+poly_f(X)
+    | poly_f(X)-poly_f(X)
+    | poly_f(X)*poly_f(X)
+    | poly_f(X)/poly_f(X)
+    | poly_f(X)^ ~nat_num. 
+
+pconst_f := ~nat_num | a | b | c.
+
+% -------------------------------------------------------------------
+
+deriv(X,     X, s(0)                 ).
+deriv(C,    _X, 0                    ) :- pconstant(C).
+deriv(U+V,   X, DU+DV                ) :- deriv(U,X,DU), deriv(V,X,DV). 
+deriv(U-V,   X, DU-DV                ) :- deriv(U,X,DU), deriv(V,X,DV).
+deriv(U*V,   X, DU*V+U*DV            ) :- deriv(U,X,DU), deriv(V,X,DV).
+deriv(U/V,   X, (DU*V-U*DV)/V^s(s(0))) :- deriv(U,X,DU), deriv(V,X,DV).
+deriv(U^s(N),X, s(N)*U^N*DU          ) :- deriv(U,X,DU), nat(N).
+deriv(log(U),X, DU/U                 ) :- deriv(U,X,DU).
+
+%% Queries:
+%% deriv(s(s(s(0)))*x+s(s(0)),x,Y).
+%% deriv(s(s(s(0)))*x+s(s(0)),x,0*x+s(s(s(0)))*s(0)+0).
+%% deriv(E,x,0*x+s(s(s(0)))*s(0)+0).
+
+% Exercise: write simplify, and run backwards.
+
+% -------------------------------------------------------------------
+
+% -------------------------------------------------------------------
+% Graph:
+% (Exercise:)
+
+% -------------------------------------------------------
+% Example:   Logic Database + recursion + types.
+%            Directed graph.
+%
+%   a ----> b             f
+%   |       |             |
+%   v       v             v
+%   c ----> d ----> e     g
+%           |
+%           v
+%           h
+% -------------------------------------------------------
+edge(a,b).
+edge(a,c).
+edge(b,d).
+edge(c,d).
+edge(d,e).
+edge(d,h).
+edge(f,g).
+
+% connected(X,Y) : There is a path from X to Y.
+%                  (transitive closure of the edge relationship).
+connected(X,X).
+connected(X,Y) :-
+    edge(X,Z),
+    connected(Z,Y).
+
+%% Queries:
+%% connected(a,e). % yes
+%% connected(a,g). % no
+%% connected(c,X). % nodes that c is connected to.
+%% connected(X,Y). % connected nodes.
+%%                 % Observe first variable unification.
+%%                 % Duplicate solutions for different paths.
+
+% -------------------------------------------------------------------
+% Exercise:
+% Example. The power of unification + database.
+%          Coloring a planar map with at most 4 colors.
+
+next(blue,yellow).
+next(blue,red).
+next(blue,green).
+next(yellow,blue).
+next(yellow,red).
+next(yellow,green).
+next(red,blue).
+next(red,yellow).
+next(red,green).
+next(green,blue).
+next(green,yellow).
+next(green,red).
+
+map_colors(R1,R2,R3,R4,R5,R6) :-
+	next(R1,R2),next(R1,R3),
+	next(R1,R5),next(R1,R6),
+	next(R2,R3),next(R2,R4),
+	next(R2,R5),next(R2,R6),
+	next(R3,R4),next(R3,R6),
+	next(R5,R6).
+
+%% Queries:
+%% map_colors(R1,R2,R3,R4,R5,R6).
+
+% -------------------------------------------------------------------
+
+accept(S) :- initial(Q), accept_from(S, Q).
+
+accept_from([],Q)     :- final(Q).
+accept_from([X|Xs],Q) :- delta(Q, X, NewQ), accept_from(Xs,NewQ).
+
+initial(q0).      final(q0).
+
+delta(q0, a, q1). 
+delta(q1, b, q0). 
+delta(q1, b, q1).
+
+% Queries:
+% accept([a,b,b]).
+% accept([A, B, C, D]).
+% accept(X).
+
+
+% -------------------------------------------------------------------
+
+ndsfa_accept(S) :- 
+    ndsfa_initial(Q),
+    ndsfa_accept_from(S, Q, []).
+
+ndsfa_accept_from([], Q, [])  :-
+    ndsfa_final(Q).
+ndsfa_accept_from([X|Xs], Q, S) :-  
+    ndsfa_delta(Q, X, S, NewQ, NewS),
+    ndsfa_accept_from(Xs, NewQ, NewS).
+
+ndsfa_initial(q0).     
+
+ndsfa_final(q1).
+
+ndsfa_delta(q0, X,     Xs, q0, [X|Xs]).
+ndsfa_delta(q0, X,     Xs, q1, [X|Xs]).
+ndsfa_delta(q0, _,     Xs, q1,     Xs).
+ndsfa_delta(q1, X, [X|Xs], q1,     Xs).
+
+
+%% Queries:
+%% ndsfa_accept([a,b,b,a]).
+%% ndsfa_accept([a,b,c,b,a]).
+%% ndsfa_accept([a,b,c,c,b,a]).
+%% ndsfa_accept([a,b,X,a]).
+%% ndsfa_accept([A, B, C, D]).
+%% ndsfa_accept(X).
+%% 
+%% Alternative: accept only words formed with symbols of 
+%%              a particular alphabet.
+%% 
+%% ndsfa_delta_alt(q0, X,     Xs, q0, [X|Xs]) :- symbol(X).
+%% ndsfa_delta_alt(q0, X,     Xs, q1, [X|Xs]) :- symbol(X).
+%% ndsfa_delta_alt(q0, _,     Xs, q1,     Xs) :- symbol(X).
+%% ndsfa_delta_alt(q1, X, [X|Xs], q1,     Xs) :- symbol(X).
+%% symbol(a).
+%% symbol(b).
+%% % symbol(c).
+
+
+% -------------------------------------------------------------------
+% Hanoi: Move N disks from peg A to peg B using peg C.
+
+hanoi_moves(N,Moves) :-
+	hanoi(N,a,b,c,Moves).
+
+hanoi(s(0),A,B,_,[move(A, B)]).
+hanoi(s(N),A,B,C,Moves) :- 
+    hanoi(N,A,C,B,Moves1),
+    hanoi(N,C,B,A,Moves2), 
+    myappend(Moves1,[move(A, B)|Moves2],Moves).
+
+%% Queries:
+%% hanoi_moves(s(s(s(0))),M).
+%% hanoi_moves(s(s(s(0))),M), hanoi_moves(N,M).
+%% hanoi_moves(N,M). % Try breadth-first, depth-first,
+
+:- use_module(library(aggregates),[findall/3]).
+:- use_module(library(write),[write/1]).
+:- use_module(engine(io_basic),[nl/0]).
+hanoi_test :-
+    findall(_,
+            ( statistics(walltime, [_,_]),
+              hanoi_moves(N,M),
+              statistics(walltime, [_,T]),
+              length(M,L),
+              write(N), write(' = '), write(L), write(' moves in '),
+              write(T), write(' mS'), nl
+            ),_).
+% -------------------------------------------------------------------
+
