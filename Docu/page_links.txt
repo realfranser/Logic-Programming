@@ -13,4 +13,5 @@ WEBSITE: https://ciao-lang.org/ciao/build/doc/lpdoc.html/
 ### Testing
 WEBSITE: http://ciao-lang.org/ciao/build/doc/ciaodbg.html/unittest.html
 
-
+### More Docu and Examples
+http://eclipseclp.org/doc/bips/lib/lists/select-3.html
