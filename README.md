@@ -20,3 +20,4 @@ The system implements some advanced features such as separate and incremental co
 
 ### Instalation
 [Instalation Guide](http://cliplab.org/logalg/doc/instalar_ciao.pdf)
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0qzOO3IBkw6phc0xvzGIDGWqpOvguQ7bZQAHJZUkZX9RBSDxtxeBY2h8tKXJKtwA9bBc9fCIlFEyJCve/s8vTudnGQGFmVR1dB0j5/ufu8Nl8iQyyaLcGgOK3UYtrhI42wqJIADfdfzUA709zlBxeuUtmdlm9wnCb++gmzqctoyc9ax0e0aisopPeqjyhWHcjaCCjpUFfZ2KD0bwg6uZNZ6uFNTodzSGjDOxctQ0BzMLpO3KDJuaENTDlI0/NoK3uMOzhrIxkn16Uv8XKBtqSgf0q2uE81H8iN5FITTK3QuUjZp2UgXuUxpaPU6qQF/XtBpVzTzwo6dA6QcXYYINx restuser@UbuntuVM
