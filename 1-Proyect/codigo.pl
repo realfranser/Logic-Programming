@@ -93,6 +93,26 @@ merge_impar([],[],[],[]).
 
 merge_par([H1|T1],[H2|T2],L1,[H1,H2|L2]):-merge_impar(T1,T2,L1,L2).
 merge_par([],[],[],[]).
+
+
+% Parte 2
+% Como segundo objetivo, dado N, y los números de Peano consecutivos de 1 a N2,
+% colocarlos en un cuadrado de tamaño N × N tal que todas las las sumen lo mismo.
+% Para ello programar (pudiéndose usar algunos predicados del punto anterior) 
+% el siguiente predicado:
+%
+% square_lists(N,SQ,S), tal que N es el número, SQ el cuadrado (representado
+% como N listas de N elementos cada una), y S el valor que suman las las.
+square_lists(0, _, _) :-
+  s(0) = s(s(0)).
+
+square_lists(s(N), SQ, S) :-
+  two_power(s(N), NN), % Calculamos el parametro de entrada N al cuadrado
+  nums(NN, DescList), % Obtenemos la lista [s(N)**2, s(N)**2 -1, ..., 1]
+  perm(DescList, PermL). % Obtenemos todas las permutaciones de la lista
+%list_to_matrix(PermL, s(N)). % separa PermL en listas de longitud N
+
+
 %%%%%%%%%%%%%%%%%%%%%%
 %%METODOS AUXILIARES%%
 %%%%%%%%%%%%%%%%%%%%%%
@@ -109,10 +129,18 @@ nat(s(X)) :- nat(X).
 % 2*k superior a 0, para k siendo un natural:
 es_par(0).
 es_par(s(s(X))) :- es_par(X).
-% suma/3 -> asignmaos al tercer parametro la suma de los dos primeros de tal
+% suma/3 -> asignamos al tercer parametro la suma de los dos primeros de tal
 % manera que se cumple la igualdad establecida:
 suma(0,X,X).
 suma(s(X),Y,s(Z)) :- suma(X,Y,Z).
+% mult/3 -> sumamos el primer argumento consigo mismo las veces que indique el
+% segundo argumento:
+mult(0, _, 0).
+mult(s(X), Y, Z) :-
+    nat(X),
+    mult(X, Y, Z1),
+    suma(Y, Z1, Z).
+
 % longitud/2 -> eliminamos recursivamente los elementos Head de la lista pasada
 % como primer parametro y sumamos el sucesor en cada iteracion al segundo:
 longitud([],0).
@@ -132,33 +160,20 @@ my_reverse(L1,L2) :- my_rev(L1,L2,[]).
 
 my_rev([],L2,L2) :- !.
 my_rev([X|Xs],L2,Acc) :- my_rev(Xs,L2,[X|Acc]).
-%%%%%%%%%%%%%%%%%%%%%%%% Funciones Auxiliares %%%%%%%%%%%%%%%%%%%%%%
+% two_power/2 -> se introduce un numero N como primer parametro y se devuelve
+% en S (segundo parametro), N al cuadrado:
+two_power(X, Y) :-
+  mult(X, X, Y).
+% list_to_matrix/3 -> separa la lista pasada como segundo parametro en sublistas de
+% tamano N (primer parametro) y se devuelve en SL (tercer parametro)
+list_to_matrix([], _, []).
+list_to_matrix(List, Size, [Row|Matrix]):-
+  list_to_matrix_row(List, Size, Row, Tail),
+  list_to_matrix(Tail, Size, Matrix).
 
-%%%%%%%%%%%%%%%%%%%%%%%% nums(N,L) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%nums(0,[]).
-%nums(s(N),[s(N)|L]) :- 
-%	nat(N),
-%	nums(N,L).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%% sumlist %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%sumlist([],0). 				%antes estab al reves y no funcionab orque m no tenia ningun 						%valor iniclializado, pero al estar asi primero llega acer se 						%iguala y ya M tiene le valor 0 joder
-
-%sumlist([H|T],S) :-
-%	sumlist(T,M),
-%	suma(H,M,S).
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-
-
-
+list_to_matrix_row(Tail, 0, [], Tail).
+list_to_matrix_row([Item|List], s(Size), [Item|Row], Tail):-
+  list_to_matrix_row(List, Size, Row, Tail).
 
 
 
