@@ -1,8 +1,162 @@
-%:- module(_,_,['bf/bfall']).
-%:- module(_,_,[classic]).
 :- module(_,_,[assertions,regtypes]).
+:- doc(title, "Documentacion para la practica de suma de pares de listas y cuadrados").
 
-alumno_prode('Serrano', 'Arrese', 'Francisco Javier', 'a180487').
+:- doc(author, "Francisco Javier Serrano, 180487").
+
+
+%alumno_prode('Serrano', 'Arrese', 'Francisco Javier', 'a180487').
+
+:- doc(module, "Este modulo calcula una lista (N...1) dado un numero N").
+@section{Los numeros aceptados por este modulo tienen que ser de la siguiente manera:}
+@includedef{nat/1}
+
+@subsection{Examples of use:}
+
+@begin{enumerate}
+@item Lista de un elemento:
+@begin{verbatim}
+?- nums(s(0), X).
+
+?-
+@end{verbatim}
+@item Lista de 3 elementos:
+@begin{verbatim}
+?- nums(s(s(s(0))), X).
+
+?-
+@end{verbatim}
+@end{enumerate}
+
+:- doc(module, "Este modulo calcula la suma de los elementos de una lista")
+@section{Los numeros aceptados por este modulo tienen que ser de la siguiente manera:}
+@includedef{nat/1}
+
+@subsection{Examples of use:}
+
+@begin{enumerate}
+@item Lista de un elemento:
+@begin{verbatim}
+?- sumlist([s(0)], X).
+
+?-
+@end{verbatim}
+@item Lista de 3 elementos:
+@begin{verbatim}
+?- sumlist([s(s(s(0))), s(0), 0], X).
+
+?-
+@end{verbatim}
+@end{enumerate}
+
+:- doc(module, "Este modulo escoge de uno a uno los elementos de una lista y los separa del resto")
+@section{Los numeros aceptados por este modulo tienen que ser de la siguiente manera:}
+@includedef{nat/1}
+
+@subsection{Examples of use:}
+
+@begin{enumerate}
+@item Lista de dos elementos:
+@begin{verbatim}
+?- choose_one([s(0), 0], X, Y).
+
+?-
+@end{verbatim}
+@item Lista de 3 elementos:
+@begin{verbatim}
+?- choose_one([s(s(s(0))), s(0), 0], X, Y).
+
+?-
+@end{verbatim}
+@end{enumerate}
+
+:- doc(module, "Este modulo ofrece todas las permutaciones de una lista usando choose_one/3")
+@section{Los numeros aceptados por este modulo tienen que ser de la siguiente manera:}
+@includedef{nat/1}
+
+@subsection{Examples of use:}
+
+@begin{enumerate}
+@item Lista de dos elementos:
+@begin{verbatim}
+?- perm([s(0), 0], X).
+
+X = [s(0), 0] ? ;
+
+X = [0, s(0)] ? ;
+no
+?-
+@end{verbatim}
+@end{enumerate}
+
+:- doc(module, "Este modulo separa una lista en dos, sublista de posiciones pares e impares")
+@section{Los numeros aceptados por este modulo tienen que ser de la siguiente manera:}
+@includedef{nat/1}
+
+@subsection{Examples of use:}
+
+@begin{enumerate}
+@item Lista de dos elementos:
+@begin{verbatim}
+?- split([s(0), 0], X, Y).
+
+X = [s(0)],
+Y = [0] ?
+yes
+?-
+@end{verbatim}
+@item Lista de 4 elementos:
+@begin{verbatim}
+?- split([s(s(s(0))), s(0), 0, s(s(0))], X, Y).
+
+X = [s(s(s(s(0)))), 0],
+Y = [s(0), s(s(0))] ?
+?-
+@end{verbatim}
+@end{enumerate}
+
+:- doc(module, "Este modulo separa una lista (N...1) en dos listas cuyos elementos suman lo mismo")
+@section{Los numeros aceptados por este modulo tienen que ser de la siguiente manera:}
+@includedef{nat/1}
+
+@subsection{Examples of use:}
+
+@begin{enumerate}
+@item Para N igual a 4:
+@begin{verbatim}
+?- sumlists(s(s(s(s(0)))), X, Y, Z).
+
+X = [s(s(0)), s(s(s(0)))],
+Y = [s(0), s(s(s(s(0))))],
+Z = s(s(s(s(s(0))))) ?
+yes
+?-
+@end{verbatim}
+@end{enumerate}
+
+:- pred my_append(X, Y, Z) #"@var{Z} es una concatenacion de las listas @var{X} y @var{Y}. @includedef{my_append/3}".
+my_append([],Ys ,Ys).
+my_append([X|Xs],Ys ,[X|Zs]) :- my_append(Xs ,Ys ,Zs).
+
+
+:- pred mult(X,Y,Z) #"@var{Z} es la multiplicacion de @var{X} por @var{Y}. @includedef 
+{mult/3}".
+mult(0, _, 0).
+mult(s(X), Y, Z) :-
+     nat(X),
+     mult(X, Y, Z1),
+     suma(Y, Z1, Z).
+
+
+:- pred sum(A,B,C)
+   #"@var{C} is the sum of @var{A} and @var{B} in Peano format. @includedef{sum/3}".
+sum(0,X,X) :- nat(X).
+sum(s(X),Y,s(Z)) :-
+    sum(X,Y,Z).
+
+:- prop nat/1 #"Natural number. @includedef{nat/1}".
+nat(0).
+nat(s(X)) :-
+    nat(X).
 
 % Parte 1
 % Dado un natural N par, construir dos listas de longitud N/2, cuyos elementos

@@ -280,7 +280,7 @@ less_or_equal_pairs(pair(s(X),s(Y))) :- less_or_equal_pairs(pair(X,Y)).
 %% =<(s(X),s(Y)) :- =<(X,Y).
 
 %% 0   =<  X   :-  nat_num(X).
-%% s(X) =< s(Y) :-  X =< Y.
+e% s(X) =< s(Y) :-  X =< Y.
 
 plus(0,Y,Y) :- nat_num(Y).
 plus(s(X),Y,s(Z)) :- plus(X,Y,Z).
