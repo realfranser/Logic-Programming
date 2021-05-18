@@ -28,7 +28,8 @@ store_result(X) :- assert(found_result(X)).
 
 compresion_recursiva(Inicial, Comprimido) :-
   retractall(found_result(_)),
-  mejor_compresion(Inicial, Comprimido).
+  %mejor_compresion(Inicial, Comprimido).
+  get_all_compresions(Inicial, Comprimido).
 
 mejor_compresion(Inicial, Comprimido) :-
   get_all_compresions(Inicial, _),
