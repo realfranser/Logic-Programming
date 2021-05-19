@@ -21,7 +21,10 @@ limpia_memo.
 
 :- dynamic
 %compresion_map/2.
-    found_result/1.
+    found_result/1,
+    memo/2.
+
+limpia_memo :- retractall(memo(_,_)).
 
   %store_list(Key, Value) :- assert(compresion_map(Key, Value)).
 store_result(X) :- assert(found_result(X)).
@@ -31,6 +34,11 @@ compresion_recursiva(Inicial, Comprimido) :-
   retractall(found_result(_)),
   mejor_compresion(Inicial, Comprimido).
   %get_all_compresions(Inicial, Comprimido).
+
+mejor_compresion_memo(Inicial, Comprimido) :-
+  limpia_memo,
+  mejor_compresion(Inicial, Comprimido),
+  !.
 
 comprimir(Inicial, Comprimido) :-
   retractall(found_result(_)),
