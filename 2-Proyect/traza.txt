@@ -1,0 +1,210 @@
+version
+Ciao 1.20.0 (2021-04-26 21:07:57 +0200) [LINUXx86_64]
+compilation
+------------------------------------------------------------
+A) Checking for correct compilation of file
+------------------------------------------------------------
+*** Loading ./codigo.pl...
+File ./codigo.pl was compiled correctly
+
+------------------------------------------------------------
+B) Checking for author names in file
+------------------------------------------------------------
+*** Detected author names:
+alumno_prode('Serrano','Arrese','Francisco Javier','A180487')
+tests
+              ====================
+              | Processing tests |
+              ====================
+[Timeout set to 3.0 sec.]
+[End of test phase.]
+
+              ====================
+              | Printing results |
+              ====================
+------------------------------------------------------------
+A) Summary results
+------------------------------------------------------------
+Note: {Total:
+Passed: 69 (81.18%) Failed: 9 (10.59%) Precond Failed: 0 (0.00%) Aborted: 0 (0.00%) Timeouts: 7 (8.24%) Total: 85 Run-Time Errors: 10
+}
+
+In the above, 
+Passed:          is the number (and %) of tests that passed. 
+Failed:          is the number (and %) of tests that failed
+Timeouts:        is the number (and %) of tests that timed out.
+Total:           is the total number of tests performed.
+Run-Time_Errors: is the total number of errors found.
+
+------------------------------------------------------------
+B) Detailed results
+------------------------------------------------------------
+{In /deliverit/tests.pl
+PASSED: (lns 24-26) partir_s/3 "T-P2-01: Partir [a,b] debe dar sólo una solución.".
+PASSED: (lns 27-28) partir_s/3 "T-P2-02: Las particiones no pueden ser vacías.".
+PASSED: (lns 29-30) partir_s/3 "T-P2-03: Las particiones no pueden ser vacías.".
+PASSED: (lns 31-32) partir_s/3 "T-P2-04: Tiene que fallar para una secuencia vacia.".
+PASSED: (lns 33-34) partir_s/3 "T-P2-05: No debe dar más soluciones de las necesarias (2).".
+PASSED: (lns 35-36) partir_s/3 "T-P2-06: Debe dar todas las soluciones.".
+PASSED: (lns 41-42) parentesis_s/3 "T-P3-01: Primer ejemplo del enunciado, (abc)3.".
+PASSED: (lns 43-43) parentesis_s/3 "T-P3-02: Segundo ejemplo del enunciado, (ab)2.".
+PASSED: (lns 44-44) parentesis_s/3 "T-P3-03: Tercer ejemplo del enunciado, a2.".
+PASSED: (lns 45-45) parentesis_s/3 "T-P3-04: Fallar si Parte no es una lista.".
+PASSED: (lns 46-46) parentesis_s/3 "T-P3-05: Fallar si Num no es un número.".
+PASSED: (lns 47-47) parentesis_s/3 "T-P3-06: Formar grupos tipo a4.".
+PASSED: (lns 48-48) parentesis_s/3 "T-P3-07: Formar grupos tipo (ab)4.".
+FAILED: (lns 49-49) parentesis_s/3 "T-P3-08: Obtener Parte a partir de ParteNum y Num instanciados.".
+parentesis_s(_,_,_) run-time check failure.
+Requires: 
+	not_fails.
+But instead:
+	fails
+PASSED: (lns 50-50) parentesis_s/3 "T-P3-09: Fallar si Num y el número de ParteNum no coinciden.".
+PASSED: (lns 55-56) se_repite_s/4 "T-P4-01: Primer ejemplo del enunciado.".
+PASSED: (lns 57-58) se_repite_s/4 "T-P4-02: Segundo ejemplo del enunciado.".
+PASSED: (lns 59-59) se_repite_s/4 "T-P4-03: Tercer ejemplo del enunciado.".
+PASSED: (lns 60-60) se_repite_s/4 "T-P4-04: Cuarto ejemplo del enunciado.".
+PASSED: (lns 61-62) se_repite_s/4 "T-P4-05: Fallar si Cs no es una lista".
+PASSED: (lns 63-63) se_repite_s/4 "T-P4-06: Fallar si Parte no es una lista".
+PASSED: (lns 64-65) se_repite_s/4 "T-P4-07: Reconocer repeticiones simples ([a,a],[a]).".
+PASSED: (lns 66-66) se_repite_s/4 "T-P4-08: Reconocer repeticiones simples.".
+PASSED: (lns 67-67) se_repite_s/4 "T-P4-09: Funciona para cualquier Num0.".
+PASSED: (lns 68-68) se_repite_s/4 "T-P4-10: Reconocer repeticiones de 2 caracteres.".
+PASSED: (lns 69-69) se_repite_s/4 "T-P4-11: Reconocer repeticiones de 2 caracteres y cualquier Num0.".
+PASSED: (lns 70-70) se_repite_s/4 "T-P4-12: Fallar si no hay secuencias Parte en Cs.".
+PASSED: (lns 71-71) se_repite_s/4 "T-P4-13: Fallar si hay repeticiones en Cs pero no de la forma Parte.".
+PASSED: (lns 72-72) se_repite_s/4 "T-P4-14: Fallar si Cs no está compuesto exactamente por repeticiones de Parte.".
+PASSED: (lns 73-73) se_repite_s/4 "T-P4-15: Fallar si Cs no está compuesto exactamente por repeticiones de Parte.".
+PASSED: (lns 84-88) repeticion_s/2 "T-A-01: Primer ejemplo del enunciado.".
+PASSED: (lns 89-92) repeticion_s/2 "T-A-02: Segundo ejemplo del enunciado.".
+PASSED: (lns 93-94) repeticion_s/2 "T-A-03: Tercer ejemplo del enunciado.".
+PASSED: (lns 95-98) repeticion_s/2 "T-A-04: Repeticion de secuencia de 3 caracteres (enumerar soluciones).".
+PASSED: (lns 99-102) repeticion_s/2 "T-A-05: Solución mínima de repeticion de secuencia de 3 caracteres.".
+PASSED: (lns 103-106) repeticion_s/2 "T-A-06: Comprimir secuencia de la forma (ab)Nb (enumerar soluciones).".
+PASSED: (lns 107-110) repeticion_s/2 "T-A-07: Comprobar solución instanciado Inicial y Comprimida.".
+PASSED: (lns 111-114) repeticion_s/2 "T-A-08: Comprimir secuencia de un caracter repetido (enumerar soluciones).".
+PASSED: (lns 115-118) repeticion_s/2 "T-A-09: Solución mínima de comprimir secuencia de un caracter repetido.".
+PASSED: (lns 119-123) repeticion_s/2 "T-A-10: Comprobar la compresión de una secuencia de 2 caracteres repetida 6 veces.".
+PASSED: (lns 124-125) repeticion_s/2 "T-A-11: Fallar si no hay repeticiones.".
+PASSED: (lns 126-129) repeticion_s/2 "T-A-12: Compresión de secuencia que repite patrones de 3 caracteres (enumerar soluciones).".
+PASSED: (lns 130-133) repeticion_s/2 "T-A-13: Compresión de secuencia que repite patrones de 4 caracteres (enumerar soluciones).".
+PASSED: (lns 134-137) repeticion_s/2 "T-A-14: Comprobar solución de compresión de secuencia que repite patrones de 4 caracteres.".
+PASSED: (lns 138-141) repeticion_s/2 "T-A-15: Compresión de secuencia que repite patrones de 3 caracteres de la forma CCD (enumerar soluciones).".
+PASSED: (lns 142-145) repeticion_s/2 "T-A-16: Comprobar solución mínima de compresión de secuencia que repite patrones de 3 caracteres de la forma CCD.".
+PASSED: (lns 146-149) repeticion_s/2 "T-A-17: Compresión de secuencia que tiene un sufijo que no forma parte de la repetición (enumerar soluciones).".
+PASSED: (lns 150-153) repeticion_s/2 "T-A-18: Comprobar solución mínima de compresión de secuencia de 4 caracteres.".
+PASSED: (lns 161-165) compresion_s/2 "T-B-01: Devolver la misma secuencia si no se puede comprimir (3 caracteres).".
+PASSED: (lns 166-169) compresion_s/2 "T-B-02: No fallar si se llama con la misma secuencia en Inicial y Comprimida y no se puede comprimir.".
+PASSED: (lns 170-173) compresion_s/2 "T-B-03: Comprimir secuencia que repite 2 veces 3 caracteres.".
+PASSED: (lns 174-177) compresion_s/2 "T-B-04: Una posible compresión es la misma secuencia.".
+PASSED: (lns 178-181) compresion_s/2 "T-B-05: Comprimir lista con 3 repeticiones (enumerar soluciones).".
+PASSED: (lns 182-185) compresion_s/2 "T-B-06: Comprobar compresión mínima de lista de 3 repeticiones.".
+PASSED: (lns 186-189) compresion_s/2 "T-B-07: Comprimir lista con sólo un caracter repetido (enumerar soluciones).".
+PASSED: (lns 190-193) compresion_s/2 "T-B-08: Comprobar compresión mínima de lista con sólo un caracter repetido.".
+PASSED: (lns 194-197) compresion_s/2 "T-B-09: Comprimir solución combinando división y repetición (enumerar soluciones).".
+PASSED: (lns 198-201) compresion_s/2 "T-B-10: Comprobar solución mínima combinando división y repetición.".
+PASSED: (lns 202-206) compresion_s/2 "T-B-11: Comprimir lista con sólo un caracter repetido (enumerar soluciones).".
+PASSED: (lns 207-210) compresion_s/2 "T-B-12: Comprobar compresión mínima de lista con sólo un caracter repetido.".
+PASSED: (lns 221-225) comprimir_s/2 "T-C-01: Inicial no comprimible (enumerar soluciones).".
+PASSED: (lns 226-229) comprimir_s/2 "T-C-02: Comprobar Inicial = Comprimida si no es comprimible.".
+PASSED: (lns 230-233) comprimir_s/2 "T-C-03: Comprimir por repetición (se repiten 3 caracteres, enumerar soluciones).".
+FAILED: (lns 234-237) comprimir_s/2 "T-C-04: Comprobar compresión mínima por repetición (se repiten 3 caracteres).".
+comprimir_s(_,_) run-time check failure.
+Requires: 
+	num_solutions(1).
+But instead:
+	solutions(0)
+comprimir_s(_1,_2) run-time check failure.
+Requires: 
+	not_fails.
+But instead:
+	exception(rtcheck(rtcheck(comp,comprimir_s(_1,_2),['L'=[a,b,c,a,b,c],'O'=[a,b,c,a,b,c]],num_solutions(1),[solutions(0)],[predloc(comprimir_s(_1,_2),loc('/deliverit/tests.pl',220,220)),asrloc(loc('/deliverit/tests.pl',234,237))])))
+PASSED: (lns 238-241) comprimir_s/2 "T-C-05: Comprimir por repetición (se repiten 2 caracteres, enumerar soluciones).".
+PASSED: (lns 242-245) comprimir_s/2 "T-C-06: Comprobar compresión mínima por repetición (se repiten 2 caracteres).".
+PASSED: (lns 246-249) comprimir_s/2 "T-C-07: Comprimir por repetición (se repite 1 caracter, enumerar soluciones).".
+PASSED: (lns 250-253) comprimir_s/2 "T-C-08: Comprobar compresión mínima por repetición (se repite 1 caracter).".
+ABORTED: (lns 254-257) comprimir_s/2 "T-C-09: Combinar comprimir por repetición y división (enumerar soluciones).". Time limit for the test exceeded.
+ABORTED: (lns 258-261) comprimir_s/2 "T-C-10: Comprobar compresión mínima combinando repetición y división.". Time limit for the test exceeded.
+PASSED: (lns 262-266) comprimir_s/2 "T-C-11: Comprimir por repetición (se repite 1 caracter, enumerar soluciones).".
+ABORTED: (lns 267-270) comprimir_s/2 "T-C-12: Combinar comprimir por repetición y división (enumerar soluciones).". Time limit for the test exceeded.
+FAILED: (lns 280-284) mejor_compresion_memo_s/2 "T-Da-01: Inicial no comprimible (enumerar soluciones).".
+mejor_compresion_memo_s(_,_) run-time check failure.
+Requires: 
+	not_fails.
+But instead:
+	exception(error(existence_error(procedure,'codigo:mejor_compresion_memo'/2),'codigo:mejor_compresion_memo'/2))
+FAILED: (lns 285-288) mejor_compresion_memo_s/2 "T-Da-02: Comprobar Inicial = Comprimida si no es comprimible.".
+mejor_compresion_memo_s(_,_) run-time check failure.
+Requires: 
+	not_fails.
+But instead:
+	exception(error(existence_error(procedure,'codigo:mejor_compresion_memo'/2),'codigo:mejor_compresion_memo'/2))
+FAILED: (lns 289-292) mejor_compresion_memo_s/2 "T-Da-03: Comprimir por repetición (se repiten 3 caracteres, enumerar soluciones).".
+mejor_compresion_memo_s(_,_) run-time check failure.
+Requires: 
+	not_fails.
+But instead:
+	exception(error(existence_error(procedure,'codigo:mejor_compresion_memo'/2),'codigo:mejor_compresion_memo'/2))
+FAILED: (lns 293-296) mejor_compresion_memo_s/2 "T-Da-04: Comprobar compresión mínima por repetición (se repiten 3 caracteres).".
+mejor_compresion_memo_s(_,_) run-time check failure.
+Requires: 
+	not_fails.
+But instead:
+	exception(error(existence_error(procedure,'codigo:mejor_compresion_memo'/2),'codigo:mejor_compresion_memo'/2))
+FAILED: (lns 297-300) mejor_compresion_memo_s/2 "T-Da-05: Comprimir por repetición (se repiten 2 caracteres, enumerar soluciones).".
+mejor_compresion_memo_s(_,_) run-time check failure.
+Requires: 
+	not_fails.
+But instead:
+	exception(error(existence_error(procedure,'codigo:mejor_compresion_memo'/2),'codigo:mejor_compresion_memo'/2))
+FAILED: (lns 301-304) mejor_compresion_memo_s/2 "T-Da-06: Comprobar compresión mínima por repetición (se repiten 2 caracteres).".
+mejor_compresion_memo_s(_,_) run-time check failure.
+Requires: 
+	not_fails.
+But instead:
+	exception(error(existence_error(procedure,'codigo:mejor_compresion_memo'/2),'codigo:mejor_compresion_memo'/2))
+FAILED: (lns 305-308) mejor_compresion_memo_s/2 "T-Da-07: Comprimir por repetición (se repite 1 caracter, enumerar soluciones).".
+mejor_compresion_memo_s(_,_) run-time check failure.
+Requires: 
+	not_fails.
+But instead:
+	exception(error(existence_error(procedure,'codigo:mejor_compresion_memo'/2),'codigo:mejor_compresion_memo'/2))
+PASSED: (lns 309-326) correcto_con_memo/1 "T-Db-01: Las soluciones deben ser correctas.".
+PASSED: (lns 327-329) correcto_con_memo/1 "T-Db-02: Las soluciones deben ser correctas.".
+ABORTED: (lns 330-332) correcto_con_memo/1 "T-Db-03: Las soluciones deben ser correctas.". Time limit for the test exceeded.
+ABORTED: (lns 333-359) mejora_con_memo/2 "T-D-01: La memorización mejora el rendimiento.". Time limit for the test exceeded.
+ABORTED: (lns 360-362) mejora_con_memo/2 "T-D-02: La memorización mejora el rendimiento.". Time limit for the test exceeded.
+ABORTED: (lns 363-365) mejora_con_memo/2 "T-D-03: La memorización mejora el rendimiento.". Time limit for the test exceeded.
+}
+
+------------------------------------------------------------
+C) Brief explanation of test output
+------------------------------------------------------------
+
+In B) above, for example, an output like: 
+
+- ERROR: (lns 113-114) Run-time check failure in assertion for:
+        foo(X,A).
+  In *comp*, unsatisfied property: 
+        not_fails.
+  Where:
+        fails
+
+  --> means that predicate foo/1 has failed for some query and should not. 
+
+- ERROR: (lns 113-114) Run-time check failure in assertion for:
+        foo(X,A).
+  In *comp*, unsatisfied property: 
+        not_fails.
+  Where:
+        exception(error(existence_error(procedure, .... 
+
+  --> means that predicate foo/1 does not exist.
+
+- Note: (lns 21-21) ABORTED: foo/1 Time limit for the test exceeded.
+
+  --> means that predicate foo/1 does not terminate in the given time limit. 
+
+  Note that tests typically try to also find a second solution to queries.
+------------------------------------------------------------
+[End of reporting phase.]

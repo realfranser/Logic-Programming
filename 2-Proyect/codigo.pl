@@ -4,14 +4,15 @@
 :- use_module(library(lists)).
 :- use_module(library(sort)).
 :- use_module(library(assoc)).
-
+:- use_module(library(librowser)).
+:- use_module(library(assertions/native_props)).
 
 alumno_prode('Serrano','Arrese','Francisco Javier','A180487').
 
 % Preliminares
 
-/* Comprimir
-comprimir(Inicial, Comprimida) :-
+/* compresion
+compresion(Inicial, Comprimida) :-
   limpia_memo,
   compresion_recursiva(Inicial, Comprimida).
 */
@@ -28,31 +29,40 @@ store_result(X) :- assert(found_result(X)).
 
 compresion_recursiva(Inicial, Comprimido) :-
   retractall(found_result(_)),
-  %mejor_compresion(Inicial, Comprimido).
-  get_all_compresions(Inicial, Comprimido).
+  mejor_compresion(Inicial, Comprimido).
+  %get_all_compresions(Inicial, Comprimido).
+
+comprimir(Inicial, Comprimido) :-
+  retractall(found_result(_)),
+  mejor_compresion(Inicial, Comprimido).
 
 mejor_compresion(Inicial, Comprimido) :-
-  get_all_compresions(Inicial, _),
-  findall(Comp, found_result(Comp), Comprimido).
+  findall(Y, get_all_compresions(Inicial, Y), Comp_List),
+  sort(Comp_List, Sorted_List),
+  head(Sorted_List, [_-Comprimido]).
+  
+
+
 
 
 get_all_compresions(Inicial, Comprimido) :-
-  sub_compresion_recursiva(Inicial, Comprimido),
-  ( found_result(Comprimido) ->
+  sub_compresion_recursiva(Inicial, New_Comp),
+  ( found_result(New_Comp) ->
     fail
   ;
-    store_result(Comprimido)
+    store_result(New_Comp),
+    length(New_Comp, CL),
+    Comprimido = [CL-New_Comp]
   ).
 
-  %compresion_map(Inicial, Comprimido).
-  %repeticion(Inicial, Comprimido).
-  %division(Inicial, Comprimido).
 
-% No compresion posible:
+
+put_length([Size], List, Res) :-
+  append(Size, List, Res).
 
 
 sub_compresion_recursiva(Inicial, Comprimido) :-
-  comprimir(Inicial, Comprimido).
+  compresion(Inicial, Comprimido).
 
 sub_compresion_recursiva(Inicial, Inicial).
 
@@ -103,7 +113,7 @@ se_repite(Cs, Parte, Num0, Num) :-
 % Repeticion:
 % Basarse en partir/3 y se_repite/4, indentificar un prefijo (una parte) que
 % nos de por repeticion la secuencia inicial. Antes de seguir, esta parte hay
-% que comprimirla de forma recursiva mediante una llamada
+% que compresionla de forma recursiva mediante una llamada
 % a compresion_recursiva/2. Finalmente componer la parte (comprimida
 % recursivamente) con el numero de repeticiones usando el predicado
 % parentesis/3.
@@ -130,12 +140,12 @@ repeticion(Inicial, Comprimida) :-
 % inicial en dos partes y aplecar el algoritmao a cada una de ellas por
 % separado (dnado mas posibilidades a encontrar repeticiones).
 
-comprimir([X|[]], [X]) :- !.
+compresion([X|[]], [X]) :- !.
 
-comprimir(Inicial, Comprimida) :-
+compresion(Inicial, Comprimida) :-
   division(Inicial, Comprimida).
 
-comprimir(Inicial, Comprimida) :-
+compresion(Inicial, Comprimida) :-
   repeticion(Inicial, Comprimida).
 
 
