@@ -1,61 +1,47 @@
-:- module(_, _, [classic,assertions]).
+:- module(_, _, [assertions]).
 
 :- use_module(library(iso_misc)).
 :- use_module(library(lists)).
 :- use_module(library(sort)).
-:- use_module(library(assoc)).
-:- use_module(library(librowser)).
 :- use_module(library(assertions/native_props)).
 
 alumno_prode('Serrano','Arrese','Francisco Javier','A180487').
 
-% Preliminares
-
-/* compresion
-compresion(Inicial, Comprimida) :-
-  limpia_memo,
-  compresion_recursiva(Inicial, Comprimida).
-*/
-
-limpia_memo.
-
 :- dynamic
-%compresion_map/2.
-    found_result/1,
-    memo/2.
+    memo/1.
 
-limpia_memo :- retractall(memo(_,_)).
+:- pred limpia_memo
+limpia_memo :- retractall(memo(_)).
 
-  %store_list(Key, Value) :- assert(compresion_map(Key, Value)).
-store_result(X) :- assert(found_result(X)).
+:- pred store_result(X)
+store_result(X) :- assert(memo(X)).
 
-
+:- pred compresion_recursiva(Inicial, Comprimido)
 compresion_recursiva(Inicial, Comprimido) :-
-  retractall(found_result(_)),
+  limpia_memo,
   mejor_compresion(Inicial, Comprimido).
-  %get_all_compresions(Inicial, Comprimido).
 
+:- pred mejor_compresion_memo(Inicial, Comprimido)
 mejor_compresion_memo(Inicial, Comprimido) :-
   limpia_memo,
   mejor_compresion(Inicial, Comprimido),
   !.
 
+:- pred comprimir(Inicial, Comprimido)
 comprimir(Inicial, Comprimido) :-
-  retractall(found_result(_)),
+  limpia_memo,
   mejor_compresion(Inicial, Comprimido).
 
+:- pred mejor_compresion(Inicial, Comprimido)
 mejor_compresion(Inicial, Comprimido) :-
   findall(Y, get_all_compresions(Inicial, Y), Comp_List),
   sort(Comp_List, Sorted_List),
   head(Sorted_List, [_-Comprimido]).
   
-
-
-
-
+:- pred get_all_compresions(Inicial, Comprimido)
 get_all_compresions(Inicial, Comprimido) :-
   sub_compresion_recursiva(Inicial, New_Comp),
-  ( found_result(New_Comp) ->
+  ( memo(New_Comp) ->
     fail
   ;
     store_result(New_Comp),
@@ -63,37 +49,23 @@ get_all_compresions(Inicial, Comprimido) :-
     Comprimido = [CL-New_Comp]
   ).
 
-
-
-put_length([Size], List, Res) :-
-  append(Size, List, Res).
-
-
+:- pred sub_compresion_recursiva(Inicial, Comprimido)
 sub_compresion_recursiva(Inicial, Comprimido) :-
   compresion(Inicial, Comprimido).
 
 sub_compresion_recursiva(Inicial, Inicial).
 
-% Partir
-/* Verifica que Parte1 y Parte2 son dos secuencias que concatenadas forman Todo */
+:- pred partir(Todo, Parte1, Parte2)
 partir(Todo, Parte1, Parte2) :-
   Parte1 = [_|_],
   Parte2 = [_|_],
   append(Parte1, Parte2, Todo).
 
-% Parentesis
-/* Params:
- *  - ParteNum: lista completa de caracteres
- *  - Parte: lista parcial de caracteres
- *  - Num: numero de repeticiones de lista parcial
- *
- * Note: si parte tiene 2 o mas elementos, add parentesis
-*/
-
+:- pred parentesis(Parte, Num, ParteNum)
 parentesis(Parte, Num, ParteNum) :-
   number(Num),
   length(Parte, 1),
-  !, % If the length of the list is 1, cut for not entering the other literal
+  !,
   append(Parte, [Num], ParteNum).
 
 parentesis(Parte, Num, ParteNum) :-
@@ -101,16 +73,7 @@ parentesis(Parte, Num, ParteNum) :-
   append(['('],Parte,ParteAux),
   append(ParteAux,[')',Num],ParteNum).
 
-% Se repite
-/* Params:
- *  - Cs: lista completa de caracteres
- *  - Parte: lista parcial de caracteres
- *  - Num0: contador de repeticiones
- *  - Num: veces que Parte se repite en Cs
- *
- * Note: si no se puede obtener con repeticiones, es false.
- *       si es lista vacia, Num sera 0 y true
-*/
+:- pred se_repite([], _, Num0, Num0).
 se_repite([], _, Num0, Num0).
 
 se_repite(Cs, Parte, Num0, Num) :-
@@ -118,36 +81,14 @@ se_repite(Cs, Parte, Num0, Num) :-
   Num1 is Num0 + 1,
   se_repite(X,Parte,Num1,Num).
 
-% Repeticion:
-% Basarse en partir/3 y se_repite/4, indentificar un prefijo (una parte) que
-% nos de por repeticion la secuencia inicial. Antes de seguir, esta parte hay
-% que compresionla de forma recursiva mediante una llamada
-% a compresion_recursiva/2. Finalmente componer la parte (comprimida
-% recursivamente) con el numero de repeticiones usando el predicado
-% parentesis/3.
-%
-% Estar atento a los tests por si devuelve una solucion de mas puede que haga
-% falta meter cut
+:- pred repeticion(Inicial, Comprimida)
 repeticion(Inicial, Comprimida) :-
   partir(Inicial, Parte1, _),
   se_repite(Inicial, Parte1, 0, Num),
-  %compresion_recursiva(Parte1,X),
   sub_compresion_recursiva(Parte1,X),
   parentesis(X, Num, Comprimida).
 
-
-% Compresion:
-% Obtener todas las repeticiones optimas o no optimas repitiendo
-% o dividiendo.
-% compresion/2: tendra dos alternativas, llamar al predicado repeticion/2 ya
-% implementado o a un nuevo predicado division/2. El predicado division/2 debe
-% partir la lista inicial en dos partes y llamar a compresion_recursiva/2 de
-% forma recursiva para finalmente concatenar los resultados.
-%
-% Es decir, ademas de considerar las repeticiones, podremos dividir la lista
-% inicial en dos partes y aplecar el algoritmo a cada una de ellas por
-% separado (dnado mas posibilidades a encontrar repeticiones).
-
+:- pred compresion([X|[]], [X])
 compresion([X|[]], [X]) :- !.
 
 compresion(Inicial, Comprimida) :-
@@ -156,59 +97,27 @@ compresion(Inicial, Comprimida) :-
 compresion(Inicial, Comprimida) :-
   repeticion(Inicial, Comprimida).
 
-
-% Division:
-% Parte la lista inicial en dos partes y llama a compresion_recursiva/2 de
-% forma recursiva apara finalmente concatenar los resultados.
+:- pred division(Inicial, Comprimida)
 division(Inicial, Comprimida) :-
   partir(Inicial, X, Y),
-  %compresion_recursiva(X, X1),
-  %compresion_recursiva(Y, Y1),
   sub_compresion_recursiva(X, X1),
   sub_compresion_recursiva(Y, Y1),
   append(X1, Y1, Comprimida).
 
-  
-
-%
-%%
-%%%
-%%
-%
-
-find_shortest_length([X|[]], X) :- !.
-
-find_shortest_length([X|Y], List) :-
-  length(X, Current),
-  length(List, Min),
-  ( Current <  Min ->
-    find_shortest_length(Y, X)
-  ;
-    find_shortest_length(Y, List)
-  ).
-
-pax(1, "Hola").
-pax(2, "Adios").
-pax(3, "Luego").
-
-%order_by([asc(X)],pax(X,G)).
-
-
-
-get_length([], 0).
-
-get_length([_|Y], N) :-
-  get_length(Y, N1),
-  N is N1 +1.
-
+:- pred head([H|_], H).
 head([H|_], H).
 
+%%%
+%%
+% Tests
+%%
+%%%
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%
 % Documentacion
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%%
 
 :- doc(title, "Compresion de Secuencias").
 :- doc(author, "Francisco Javier Serrano Arrese 180487").
@@ -361,7 +270,7 @@ El algoritmo utilizado para este predicado cuenta con los siguientes pasos:
 :- pred get_all_compresions(Inicial, Comprimido)
 
 Verifica la busqueda de compresiones de la lista @var{Inicial} y guarda de forma dinamica los resultados encontrados. En caso de que una compresion ya haya sido obtenida anteriormente,
-esta se descarta. Sim embargo, si estamos ante una nueva compresion, este se guardara dinamicamente como lema del predicado @var{found_result/1}. Se ha optado por guardar la compresion en formato Key, Value siendo Key el tamaño de la lista y value la lista en si. @includedef{get_all_compresions/2}
+esta se descarta. Sim embargo, si estamos ante una nueva compresion, este se guardara dinamicamente como lema del predicado @var{memo/1}. Se ha optado por guardar la compresion en formato Key, Value siendo Key el tamaño de la lista y value la lista en si. @includedef{get_all_compresions/2}
 @end{verbatim}
 
 @subsection{Explicacion get_all_compresions(Inicial, Comprimida)}
@@ -369,7 +278,7 @@ esta se descarta. Sim embargo, si estamos ante una nueva compresion, este se gua
 El algoritmo utilizado para este predicado cuenta con los siguientes pasos:
   1) Se llama a @var{sub_compresion_recursiva/2} obteniendo una compresion en @var{New_Comp}.
   2) Si @var{New_Comp} ya ha sido encontrada previamente se failea la busqueda de esta compresion en concreto.
-  3) Si @var{New_Comp} no ha sido encontrada previamente, se guarda en @var{found_result/1} haciendo uso del predicado @var{store_result/1}
+  3) Si @var{New_Comp} no ha sido encontrada previamente, se guarda en @var{memo/1} haciendo uso del predicado @var{store_result/1}
   4) Se haya el tamaño de la lista @var{New_Comp} en @var{CL} haciendo uso del predicado @var{length/2}.
   5) Se verifica que la variable de entrada @var{Comprimido} sea igual al par @var{CL} - @var{New_Comp}.
 @end{verbatim}
@@ -378,26 +287,26 @@ El algoritmo utilizado para este predicado cuenta con los siguientes pasos:
 @begin{verbatim}
 :- pred store_result(X)
 
-Guarda de forma dinamica @var{X} como lema del predicado @var{found_result/1}.@includedef{store_result/1}
+Guarda de forma dinamica @var{X} como lema del predicado @var{memo/1}.@includedef{store_result/1}
 @end{verbatim}
 
 @subsection{Explicacion store_result(X)}
 @begin{verbatim}
 El algoritmo utilizado para este predicado cuenta con los siguientes pasos:
-  1) Hacer uso de @var{assert/1} para almacenar dinamicamente el lema @var{X} en el predicado @var{found_result/1}.
+  1) Hacer uso de @var{assert/1} para almacenar dinamicamente el lema @var{X} en el predicado @var{memo/1}.
 @end{verbatim}
 
 @subsection{limpia_memo}
 @begin{verbatim}
 :- pred limpia_memo
 
-Elimina la memoria dinamica asiganada a los lemas del predicado @var{found_result/1}.@includedef{limpia_memo/0}
+Elimina la memoria dinamica asiganada a los lemas del predicado @var{memo/1}.@includedef{limpia_memo/0}
 @end{verbatim}
 
 @subsection{Explicacion limpia_memo}
 @begin{verbatim}
 El algoritmo utilizado para este predicado cuenta con los siguientes pasos:
-  1) Hacer uso de @var{retractall/1} para eliminar la memoria asiganada los lemas del predicado @var{found_result/1}.
+  1) Hacer uso de @var{retractall/1} para eliminar la memoria asiganada los lemas del predicado @var{memo/1}.
 @end{verbatim}
 
 @subsection{head(List, Head)}
@@ -413,505 +322,163 @@ El algoritmo utilizado para este predicado cuenta con los siguientes pasos:
   1) Establecer una igualdad entre el primer elemeto de @var{Lista} y @var{Head}.
 @end{verbatim}
 
-
-@section{Consultas realizadas}
-@subsection{eliminar_comodines(X,R,L)}
+@section{Casos de prueba}
+@subsection{partir(Todo, Parte1, Parte2)}
 @begin{verbatim}
 
-Se comprueba que da fallo cuando la CPU tiene menos de 2 registros
+Se comprueba caso erroneo en el que Todo es una lista vacia
 
-:- test eliminar_comodines(X,R,L) : (X=regs(1)) + fails #''La CPU tiene que tener de 2 a N registros''.
+:- test partir(Todo, Parte1, Parte2) : (Todo=[]) + fails #"No se puede partir una lista vacia."
 
-Se comprueba que no da fallo cuando todos los registros tienen constantes
+Se comprueba caso erroneo en el que Todo es una lista de un elemento
 
-:- test eliminar_comodines(X,R,L) : (X=regs(12,3,4,a,t,+,*,p)) + not_fails #''Registros de la CPU correctos''.
+:- test partir(Todo, Parte1, Parte2) : (Todo=[a]) + fails #"No se puede partir una lista con un solo elemento."
 
-Se comprueba que da fallo cuando algun registro tiene una variable
+Se comprueba caso valido en el que Todo es una lista con dos elementos (solo debe dar una solucion).
 
-:- test eliminar_comodines(X,R,L) : (X=regs(1,32,X,u,i9)) + fails #''Algun registro de la CPU tiene una variable''.
+:- test partir(Todo, Parte1, Parte2) : (Todo=[a,b]) + not_fails #"Lista dividida satisfactoriamente."
 
-Se comprueba que no da fallo cuando no hay variables
+Se comprueba caso valido en el que Todo es una lista con 4 elementos (debe dar todas las soluciones).
 
-:- test eliminar_comodines(X,R,L) : (X=regs(!,2)) + not_fails #''Registros de la CPU correctos''.
-
-Se comprueba que da fallo cuando algun registro tiene un elemento que no es una constante
-
-:- test eliminar_comodines(X,R,L) : (X=regs(1,32,4<5)) + fails #''Algun registro de la CPU tiene un elemento que no es una constante''.
-
-Se comprueba que da fallo cuando no se elimina el comodin
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,*),R=regs(0,*)) + fails #''No se ha eliminado el comodin''.
-
-Se comprueba que da fallo cuando no se elimina el comodin
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,0),R=regs(*,0)) + fails #''No se ha eliminado el comodin''.
-
-Se comprueba que da fallo cuando no se elimina el comodin
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,1,4,+,2,*),R=regs(0,1,4,+,2,*)) + fails #''No se ha eliminado el comodin''.
-
-Se comprueba que da fallo cuando no se elimina el comodin
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,4,+,2,3),R=regs(*,1,4,+,2,3)) + fails #''No se ha eliminado el comodin''.
-
-Se comprueba que da fallo cuando no se eliminan todos los comodines
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,*),R=regs(_,*)) + fails #''No se han eliminado todos los comodines''.
-
-Se comprueba que da fallo cuando no se eliminan todos los comodines
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,*,*),R=regs(0,W,*)) + fails #''No se han eliminado todos los comodines''.
-
-Se comprueba que da fallo cuando no se eliminan todos los comodines
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,0,0,*),R=regs(*,0,0,_L)) + fails #''No se han eliminado todos los comodines''.
-
-Se comprueba que da fallo cuando no se eliminan todos los comodines
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,*,+,2,*),R=regs(*,1,*,+,2,*)) + fails #''No se han eliminado todos los comodines''.
-
-Se comprueba que da fallo cuando no se sustituye el comodin por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,*),R=regs(0,a)) + fails #''No se ha sustituido el comodin por una variable''.
-
-Se comprueba que da fallo cuando no se sustituye el comodin por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,0),R=regs(1,0)) + fails #''No se ha sustituido el comodin por una variable''.
-
-Se comprueba que da fallo cuando no se sustituye el comodin por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,1,4,+,2,*),R=regs(0,1,4,+,2,<)) + fails #''No se ha sustituido el comodin por una variable''.
-
-Se comprueba que no da fallo cuando se sustituye el comodin por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,4,+,2,3)) => (R=regs(_,1,4,+,2,3)) + not_fails #''Se ha sustituido por variable''.
-
-Se comprueba que no da fallo cuando se sustituyen los comodines por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,*)) => (R=regs(_,_)) + not_fails #''Se han sustituido por variables''.
-
-Se comprueba que no da fallo cuando se sustituyen los comodines por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,*,*)) => (R=regs(0,_,_)) + not_fails #''Se han sustituido por variables''.
-
-Se comprueba que no da fallo cuando se sustituyen los comodines por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,0,0,*)) => (R=regs(_,0,0,_)) + not_fails #''Se han sustituido por variables''.
-
-Se comprueba que no da fallo cuando se sustituyen los comodines por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,*,+,2,*)) => (R=regs(_,1,_,+,2,_)) + not_fails #''Se han sustituido por variables''.
-
-Se comprueba que no da fallo cuando se sustituye el comodin por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,4,+,2,3),R=regs(_,1,4,+,2,3)) + not_fails #''Se ha sustituido por variable''.
-
-Se comprueba que no da fallo cuando se sustituyen los comodines por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,*),R=regs(_Z,_)) + not_fails #''Se han sustituido por variables''.
-
-Se comprueba que no da fallo cuando se sustituyen los comodines por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,*,*),R=regs(0,_Hola,Z)) + not_fails #''Se han sustituido por variables''.
-
-Se comprueba que no da fallo cuando se sustituyen los comodines por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,0,0,*),R=regs(P,0,0,_)) + not_fails #''Se han sustituido por variables''.
-
-Se comprueba que no da fallo cuando se sustituyen los comodines por una variable
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,*,+,2,*),R=regs(_Ea,1,_,+,2,W)) + not_fails #''Se han sustituido por variables''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(1,1,+,5,*)) => (R=regs(1,1,+,5,_),L=[1,1,+,5]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,*)) => (R=regs(0,_),L=[0]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,0)) => (R=regs(_,0),L=[0]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,1,4,+,2,*)) => (R=regs(0,1,4,+,2,_),L=[0,1,4,+,2]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,4,+,2,3)) => (R=regs(_,1,4,+,2,3),L=[1,4,+,2,3]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,*)) => (R=regs(_,_),L=[]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,*,*)) => (R=regs(0,_,_),L=[0]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,0,0,*)) => (R=regs(_,0,0,_),L=[0,0]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,*,+,2,*)) => (R=regs(_,1,_,+,2,_),L=[1,+,2]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,4,+,2,3)) => (R=regs(_,1,4,+,2,3),L=[1,4,+,2,3]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,*)) => (R=regs(_Z,_),L=[]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,*,*)) => (R=regs(0,_Hola,Z),L=[0]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,0,0,*)) => (R=regs(P,0,0,_),L=[0,0]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que no da fallo cuando se genera la lista correctamente
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,*,+,2,*)) => (R=regs(_Ea,1,_,+,2,W),L=[1,+,2]) + not_fails #''Lista generada correctamente''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(1,1,+,5,*),R=regs(1,1,+,5,_),L=[1,1,+]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,*),R=regs(0,_),L=[0,1]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,0),R=regs(_,0),L=[0,2]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,1,4,+,2,*),R=regs(0,1,4,+,2,_),L=[0,1,4,+,2,3]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,4,+,2,3),R=regs(_,1,4,+,2,3),L=[1,4,+,2]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,*),R=regs(_,_),L=[1]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,*,*),R=regs(0,_,_),L=[]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,0,0,*),R=regs(_,0,0,_),L=[0,0,3]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,*,+,2,*),R=regs(_,1,_,+,2,_),L=[1,+,2,5]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,4,+,2,3),R=regs(_,1,4,+,2,3),L=[1,4,+,2]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,*),R=regs(_Z,_),L=[1]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(0,*,*),R=regs(0,_Hola,Z),L=[0,5]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,0,0,*),R=regs(P,0,0,_),L=[0,0,0]) + fails #''Lista generada de forma incorrecta''.
-
-Se comprueba que da fallo cuando se genera la lista
-
-:- test eliminar_comodines(X,R,L) : (X=regs(*,1,*,+,2,*),R=regs(_Ea,1,_,+,2,W),L=[1,+,2,0]) + fails #''Lista generada de forma incorrecta''.
+:- test partir(Todo, Parte1, Parte2) : (Todo=[a,b,c,d]) + not_fails #"Lista dividida satisfactoriamente."
 @end{verbatim}
 
-@subsection{ejecutar_instruccion(EA,I,ES)}
+@subsection{parentesis(Parte, Num, ParteNum)}
 @begin{verbatim}
-Se comprueba que da fallo cuando la CPU tiene menos de 2 registros
 
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1)) + fails #''La CPU tiene que tener de 2 a N registros''.
+Se comprueba caso erroneo en el que Parte no es una lista.
 
-Se comprueba que no da fallo cuando todos los registros tienen constantes
+:- test parentesis(Parte, Num, ParteNum) : (Parte=1,Num=1) + fails #"No se puede aplicar parentesis."
 
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(12,3,4,a,t,+,*,p),I=move(1)) + not_fails #''Registros de la CPU correctos''.
+Se comprueba caso erroneo en el que Num no sea un numero.
 
-Se comprueba que da fallo cuando algun registro tiene una variable
+:- test parentesis(Parte, Num, ParteNum) : (Parte=[a,b,c],Num=a) + fails #"No se puede aplicar parentesis."
 
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,32,X,u,i9),I=swap(1,7)) + fails #''Algun registro de la CPU tiene una variable''.
+Se comprueba caso valido para el primer ejemplo del enunciado.
 
-Se comprueba que no da fallo cuando no hay variables
+:- test parentesis(Parte, Num, ParteNum) : (Parte=[a,b,c],Num=3) + not_fails #"Parentesis aplicado satisfactoriamente."
 
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(!,2),I=swap(1,2)) + not_fails #''Registros de la CPU correctos''.
+Se comprueba caso valido para el segundo ejemplo del enunciado.
 
-Se comprueba que da fallo cuando algun registro tiene un elemento que no es una constante
+:- test parentesis(Parte, Num, ParteNum) : (Parte=[a,b],Num=2) + not_fails #"Parentesis aplicado satisfactoriamente."
 
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,32,4<5),I=move(1)) + fails #''Algun registro de la CPU tiene un elemento que no es una constante''.
+Se comprueba caso valido para el tercer ejemplo del enunciado.
 
-Se comprueba que da fallo cuando se meten parametros al swap que no son numeros
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=swap(1,a)) + fails #''Parametro no valido en swap''.
-
-Se comprueba que da fallo cuando se meten parametros al swap que no son numeros
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=swap(b,2)) + fails #''Parametro no valido en swap''.
-
-Se comprueba que da fallo cuando se meten parametros al swap que no son numeros
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=swap(1,'a')) + fails #''Parametro no valido en swap''.
-
-Se comprueba que da fallo cuando se meten parametros al swap que no son numeros
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=swap(1,''a'')) + fails #''Parametro no valido en swap''.
-
-Se comprueba que da fallo cuando se meten mas de 2 numeros al swap
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=swap(1,2,4)) + fails #''Swap solo tiene 2 parametros''.
-
-Se comprueba que da fallo cuando se mete solo 1 numero al swap
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=swap(1)) + fails #''Swap necesita 2 parametros''.
-
-Se comprueba que da fallo cuando primer parametro es igual que el segundo en swap
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=swap(5,5)) + fails #''i tiene que ser menor que j en swap''.
-
-Se comprueba que da fallo cuando se mete 0 al swap
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=swap(0,1)) + fails #''No hay registro 0''.
-
-Se comprueba que da fallo cuando se mete 1 numero negativo al swap
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=swap(-1,1)) + fails #''No hay registros negativos''.
-
-Se comprueba que da fallo cuando se mete algun numero mayor que el numero de registros al swap
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=swap(5,1)) + fails #''Los numeros de swap tienen que ser menores que el numero de registro''.
-
-Se comprueba que da fallo cuando se mete algun numero mayor que el numero de registros al swap
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=swap(1,5)) + fails #''Los numeros de swap tienen que ser menores que el numero de registro''.
-
-Se comprueba que da fallo cuando se mete algun numero mayor que el numero de registros al swap
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=swap(5,7)) + fails #''Los numeros de swap tienen que ser menores que el numero de registro''.
-
-Se comprueba que da fallo cuando se mete mas de 1 numero al move
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=move(1,2)) + fails #''Move solo tiene 1 parametro''.
-
-Se comprueba que da fallo cuando se mete mas de 1 numero al move
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=move(1,2,3)) + fails #''Move solo tiene 1 parametro''.
-
-Se comprueba que da fallo cuando se mete 1 numero negativo a move
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=move(-1)) + fails #''El numero de move tiene que ser positivo''.
-
-Se comprueba que da fallo cuando se mete 0 a move
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=move(0)) + fails #''El numero de move tiene que ser positivo''.
-
-Se comprueba que da fallo cuando se mete 1 numero mayor que numero de registros a move
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=move(4)) + fails #''El numero de move tiene que ser menor que el numero de registros''.
-
-Se comprueba que da fallo cuando se mete 1 parametro que no es un numero al move
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=move(a)) + fails #''Parametro de move solo puede ser 1 numero''.
-
-Se comprueba que da fallo cuando se mete 1 parametro que no es un numero al move
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=move(''a'')) + fails #''Parametro de move solo puede ser 1 numero''.
-
-Se comprueba que da fallo cuando se mete 1 parametro que no es un numero al move
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,4),I=move('a')) + fails #''Parametro de move solo puede ser 1 numero''.
-
-Se comprueba que se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2), I=swap(1,2)) => (ES=regs(2,1)) + not_fails #''Instruccion ejecutada correctamente''.
-
-Se comprueba que se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,*,<), I=swap(2,3)) => (ES=regs(1,<,*)) + not_fails #''Instruccion ejecutada correctamente''.
-
-Se comprueba que se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(2,*,<,-1), I=swap(1,4)) => (ES=regs(-1,*,<,2)) + not_fails #''Instruccion ejecutada correctamente''.
-
-Se comprueba que se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,+,5,*), I=swap(1,2)) => (ES=regs(2,1,+,5,*)) + not_fails #''Instruccion ejecutada correctamente''.
-
-Se comprueba que no se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2), I=swap(1,2), ES=regs(1,2)) + fails #''Instruccion no ejecutada correctamente''.
-
-Se comprueba que no se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,*,<), I=swap(2,3), ES=regs(*,1,<)) + fails #''Instruccion no ejecutada correctamente''.
-
-Se comprueba que no se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(2,*,<,-1), I=swap(1,4), ES=regs(*,<,-1,2)) + fails #''Instruccion no ejecutada correctamente''.
-
-Se comprueba que no se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,+,5,*), I=swap(1,2), ES=regs(*,1,2,5,+)) + fails #''Instruccion no ejecutada correctamente''.
-
-Se comprueba que se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2), I=move(1)) => (ES=regs(1,1)) + not_fails #''Instruccion ejecutada correctamente''.
-
-Se comprueba que se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,*,<), I=move(2)) => (ES=regs(1,*,*)) + not_fails #''Instruccion ejecutada correctamente''.
-
-Se comprueba que se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,*,<,1), I=move(3)) => (ES=regs(1,*,<,<)) + not_fails #''Instruccion ejecutada correctamente''.
-
-Se comprueba que se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(2,*,<,-1), I=move(4)) => (ES=regs(-1,*,<,-1)) + not_fails #''Instruccion ejecutada correctamente''.
-
-Se comprueba que se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,+,5,*), I=move(5)) => (ES=regs(*,2,+,5,*)) + not_fails #''Instruccion ejecutada correctamente''.
-
-Se comprueba que no se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2), I=move(1), ES=regs(1,2)) + fails #''Instruccion no ejecutada correctamente''.
-
-Se comprueba que no se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,*,<), I=move(3), ES=regs(1,<,1)) + fails #''Instruccion no ejecutada correctamente''.
-
-Se comprueba que no se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(2,*,<,-1), I=move(4), ES=regs(2,*,*,-1)) + fails #''Instruccion no ejecutada correctamente''.
-
-Se comprueba que no se ejecuta la instruccion correctamente
-
-:- test ejecutar_instruccion(EA,I,ES) : (EA=regs(1,2,+,5,*), I=move(2), ES=regs(1,1,+,5,*)) + fails #''Instruccion no ejecutada correctamente''.
+:- test parentesis(Parte, Num, ParteNum) : (Parte=[a],Num=2) + not_fails #"Parentesis aplicado satisfactoriamente."
 @end{verbatim}
 
-@subsection{generador_de_codigo(EI,EF,L)}
+@subsection{se_repite(Cs, Parte, Num0, Num)}
 @begin{verbatim}
-Se comprueba que da fallo cuando EI tiene menos de 2 registros
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(1)) + fails  #''EI tiene que tener de 2 a N registros ''.
+Se comprueba caso erroneo en el que Cs no es una lista.
 
-Se comprueba que da fallo cuando EF tiene menos de 2 registros
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=1,Parte=[a,b],Num0=0) + fails #"No se pudo contar el numero de repeticiones de la subsecuencia."
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(1,2),EF=regs(1)) + fails  #''EF tiene que tener de 2 a N registros ''.
+Se comprueba caso erroneo en el que Parte no es una lista.
 
-Se comprueba que da fallo cuando algun registro tiene una variable
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b],Parte=1,Num0=0) + fails #"No se pudo contar el numero de repeticiones de la subsecuencia."
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(1,32,X,u,i9),EF=regs(i9,32,X,u,1)) + fails  #''Algun registro de la CPU tiene una variable''.
+Se comprueba caso erroneo en el que Parte no es subsecuencia de Cs.
 
-Se comprueba que no da fallo cuando no hay variables
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b,a,b],Parte=[c,d],Num0=0) + fails #"No se pudo contar el numero de repeticiones de la subsecuencia."
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(!,2),EF=regs(2,!)) + not_fails  #''Registros de la CPU correctos''.
+Se comprueba caso erroneo en el que Parte no es la unica subsecuencia de Cs.
 
-Se comprueba que da fallo cuando algun registro tiene un elemento que no es una constante
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b,a,b,c],Parte=[a,b],Num0=0) + fails #"No se pudo contar el numero de repeticiones de la subsecuencia."
 
-:- test generador_de_codigo(EI,EF,L) : (IA=regs(1,32,4<5),EF=regs(32,1,4<5)) + fails  #''Algun registro de la CPU tiene un elemento que no es una constante''.
+Se comprueba caso valido en el que se reconoce una secuencia simple.
 
-Se comprueba que se genera una lista con el tamaño minimo de instrucciones
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,a],Parte=[a],Num0=0) + not_fails #"Secuencia reconocida satisfactoriamente."
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(<,2),EF=regs(2,<)) => (L = [swap(1,2)]) + not_fails #''Lista minima generada correctamente''.
+Se comprueba caso valido en el que se reconoce una secuencia de varios caracteres.
 
-Se comprueba que se genera una lista con el tamaño minimo de instrucciones
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b,a,b],Parte=[a,b],Num0=0) + not_fails #"Secuencia reconocida satisfactoriamente."
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(<,2),EF=regs(*,*)) => (L = []) + not_fails #''Lista minima generada correctamente''.
+Se comprueba caso valido en el que se reconoce una secuencia con para Num0 distinto de 0.
 
-Se comprueba que se genera una lista con el tamaño minimo de instrucciones
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b,a,b],Parte=[a,b],Num0=5) + not_fails #"Secuencia reconocida satisfactoriamente."
+@end{verbatim}
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(<,2),EF=regs(<,<)) => (L = [move(1)]) + not_fails #''Lista minima generada correctamente''.
+@subsection{repeticion(Inicial, Comprimida)}
+@begin{verbatim}
 
-Se comprueba que se genera una lista con el tamaño minimo de instrucciones
+Se comprueba caso erroneo en el que no hay repeticiones.
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(*,*),EF=regs(a,b)) + fails #''Lista minima generada correctamente''.
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,b,c]) + fails #"No se pudo comprimir la lista por repeticion."
 
-Se comprueba que se genera una lista con el tamaño minimo de instrucciones
+Se comprueba caso valido en el que se repite una secuencia de patrones de 3 caracteres.
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(a,b,c),EF=regs(b,c,b)) => (L =[swap(2,3),move(3)]) + not_fails #''Lista minima generada correctamente''.
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,b,c,a,b,c,a,b,c]) + not_fails #"Lista comprimida por repeticion satisfactoriamente."
 
-Se comprueba que se genera una lista con el tamaño minimo de instrucciones
+Se comprueba caso valido en el que se repite una secuencia del mismo caracter.
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(a,c,*),EF=regs(c,a,*)) => (L =[swap(1,2)]) + not_fails #''Lista minima generada correctamente''.
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,a,a,a,a,a]) + not_fails #"Lista comprimida por repeticion satisfactoriamente."
 
-Se comprueba que se genera una lista con el tamaño minimo de instrucciones
+Se comprueba caso valido en el que se repite una secuencia de patrones de 3 caracteres.
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(1,2,3),EF=regs(1,1,1)) => (L =[move(1),move(2)]) + not_fails #''Lista minima generada correctamente''.
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,b,c,a,b,c,a,b,c]) + not_fails #"Lista comprimida por repeticion satisfactoriamente."
+@end{verbatim}
 
-Se comprueba que se genera una lista con el tamaño minimo de instrucciones
+@subsection{compresion(Inicial, Comprimida)}
+@begin{verbatim}
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(1,<,z),EF=regs(<,<,<)) => (L =[move(2),move(3)]) + not_fails #''Lista minima generada correctamente''.
+Junto con las comprobaciones de compresion se puede testear el correcto funcionamiento de division.
 
-Se comprueba que se genera una lista con el tamaño minimo de instrucciones
+Se comprueba caso valido en el que no se puede comprimir por lo que se devuelve la misma secuencia.
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(a,b,c),EF=regs(a,a,*)) => (L =[move(1)]) + not_fails #''Lista minima generada correctamente''.
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,b,c]) + not_fails #"Secuencia comprimida satisfactoriamente (es la misma que la de entrada)."
 
-Se comprueba que se genera una lista con el tamaño minimo de instrucciones
+Se comprueba caso valido en el que se comprime una secuencia de 3 caracteres 2 veces.
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(*,*,*),EF=regs(*,*,*)) => (L =[]) + not_fails #''Lista minima generada correctamente''.
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,b,c,a,b,c]) + not_fails #"Secuencia comprimida satisfactoriamente."
 
-Se comprueba que se genera una lista con el tamaño minimo de instrucciones
+Se comprueba caso valido en el que se combina repeticion y division.
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(*,a,*),EF=regs(a,*,*)) => (L =[swap(1,2)]) + not_fails #''Lista minima generada correctamente''.
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,b,a,b,a,b,c,c,c]) + not_fails #"Secuencia comprimida satisfactoriamente (es la misma que la de entrada)."
+@end{verbatim}
 
-Se comprueba que se genera una lista con el tamaño minimo de instrucciones
+@subsection{comprimir(Inicial, Comprimido)}
+@begin{verbatim}
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(a,b,c,d,*),EF=regs(a,b,c,d,e)) + fails #''Lista minima generada correctamente''.
 
-Se comprueba que se genera una lista con todas las soluciones que tienen el tamaño minimo de movimientos
+Se prueba un caso valido en el que no se puede comprimir por lo que se devuelve la misma secuencia.
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(a,*,c),EF=regs(c,a,*)) => (L=[move(1),move(3)];L=[move(1),swap(1,3)];L=[swap(1,2),move(3)];L=[swap(1,2),swap(1,3)];L=[swap(1,3),swap(2,3)];L=[swap(2,3),swap(1,2)]) + (try_sols(6), not_fails) #''Lista minima generada correctamente''.
+:- test comprimir(Inicial, Comprimido) : (Inicial=[a,b,c]) + not_fails #"Se ha obtenido la secuencia comprimida optima."
 
-Se comprueba que se genera una lista con todas las soluciones que tienen el tamaño minimo de movimientos
+Se prueba un caso valido en el que se comprimen secuencias repetidas de 3 caracateres.
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(a,b,c,d),EF=regs(a,d,a,b)) => (L=[move(2),move(1),swap(2,3),swap(2,4)];L=[move(2),move(1),swap(2,4),swap(3,4)];L=[move(2),move(1),swap(3,4),swap(2,3)];L=[move(2),swap(3,4),move(1),swap(2,3)];L=[swap(1,2),move(2),swap(1,2),swap(2,4)];L=[swap(1,2),move(2),swap(1,4),swap(1,2)];L=[swap(1,2),move(2),swap(2,4),swap(1,4)];L=[swap(1,2),swap(1,4),move(2),swap(1,2)];L=[swap(2,3),move(1),swap(2,3),swap(2,4)];L=[swap(2,3),move(1),swap(2,4),swap(3,4)];L=[swap(2,3),move(1),swap(3,4),swap(2,3)];L=[swap(2,3),swap(3,4),move(1),swap(2,3)];L=[swap(1,4),swap(2,4),move(2),swap(1,2)];L=[swap(2,4),move(2),move(1),swap(2,3)];L=[swap(2,4),swap(1,2),move(2),swap(1,2)];L=[swap(2,4),swap(2,3),move(1),swap(2,3)];L=[swap(3,4),swap(2,4),move(1),swap(2,3)]) + (try_sols(17), not_fails) #''Lista minima generada correctamente''.
+:- test comprimir(Inicial, Comprimido) : (Inicial=[a,b,c,a,b,c]) + not_fails #"Se ha obtenido la secuencia comprimida optima."
 
-Se comprueba que se genera una lista con todas las soluciones que tienen el tamaño minimo de movimientos
+Se prueba un caso valido en el que se comprime por repeticion un solo elemento varias veces.
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(a,b,c),EF=regs(a,a,*)) => (L=[move(1)]) + (try_sols(1), not_fails) #''Lista minima generada correctamente''.
+:- test comprimir(Inicial, Comprimido) : (Inicial=[a,a,a,a,a]) + not_fails #"Se ha obtenido la secuencia comprimida optima."
 
-Se comprueba que se genera una lista con todas las soluciones que tienen el tamaño minimo de movimientos
+Se prueba un caso valido en el que se comprime por repeticion y por division varios elementos.
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(a,b,c,d,*,e,*),EF=regs(a,*,*,a,b,e,e)) => (L = [move(6),swap(2,5),move(1),swap(2,4)];L=[swap(2,5),move(6),move(1),swap(2,4)];L=[swap(2,5),move(1),move(6),swap(2,4)];L=[swap(2,5),move(1),swap(2,4),move(6)]) + (try_sols(4), not_fails) #''Lista minima generada correctamente''.
+:- test comprimir(Inicial, Comprimido) : (Inicial=[a,b,a,b,a,a,a]) + not_fails #"Se ha obtenido la secuencia comprimida optima."
+@end{verbatim}
 
-Se comprueba que se genera una lista con todas las soluciones que tienen el tamaño minimo de movimientos
+@subsection{mejor_compresion_memo(Inicial, Comprimido)}
+@begin{verbatim}
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(p,r,t,*,*,w,o,w),EF=regs(*,*,*,*,*,*,p,t)) => (L=[swap(1,7),swap(3,8)];L=[swap(3,8),swap(1,7)]) + (try_sols(6), not_fails) #''Lista minima generada correctamente''.
+Se prueba un caso valido en el que no se puede comprimir por lo que se devuelve la misma secuencia.
 
-Se comprueba que se genera una lista con todas las soluciones que tienen el tamaño minimo de movimientos
+:- test mejor_compresion_memo(Inicial, Comprimido) : (Inicial=[a,b,c]) + not_fails #"Se ha obtenido la secuencia comprimida optima."
 
-:- test generador_de_codigo(EI,EF,L) : (EI=regs(p,r,t,*,*,w,o,w),EF=regs(*,p,w,*,o,*,p,t)) => (L=[move(1),swap(1,5),swap(5,7),swap(3,8)];L=[move(1),swap(1,5),swap(3,8),swap(5,7)];L=[move(1),swap(1,7),swap(1,5),swap(3,8)];L=[move(1),swap(1,7),swap(3,8),swap(1,5)];L=[move(1),swap(5,7),swap(1,7),swap(3,8)];L=[move(1),swap(5,7),swap(3,8),swap(1,7)];L=[move(1),swap(3,8),swap(1,5),swap(5,7)];L=[move(1),swap(3,8),swap(1,7),swap(1,5)];L=[move(1),swap(3,8),swap(5,7),swap(1,7)];L=[swap(5,7),move(1),swap(1,7),swap(3,8)];L=[swap(5,7),move(1),swap(3,8),swap(1,7)];L=[swap(5,7),swap(3,8),move(1),swap(1,7)];L=[swap(3,8),move(1),swap(1,5),swap(5,7)];L=[swap(3,8),move(1),swap(1,7),swap(1,5)];L=[swap(3,8),move(1),swap(5,7),swap(1,7)];L=[swap(3,8),swap(5,7),move(1),swap(1,7)]) + (try_sols(6), not_fails) #''Lista minima generada correctamente''.
+Se prueba un caso valido en el que se comprimen secuencias repetidas de 3 caracateres.
+
+:- test mejor_compresion_memo(Inicial, Comprimido) : (Inicial=[a,b,c,a,b,c]) + not_fails #"Se ha obtenido la secuencia comprimida optima."
+
+Se prueba un caso valido en el que se comprime por repeticion un solo elemento varias veces.
+
+:- test mejor_compresion_memo(Inicial, Comprimido) : (Inicial=[a,a,a,a,a]) + not_fails #"Se ha obtenido la secuencia comprimida optima."
+
+Se prueba un caso valido en el que se comprime por repeticion y por division varios elementos.
+
+:- test mejor_compresion_memo(Inicial, Comprimido) : (Inicial=[a,b,a,b,a,a,a]) + not_fails #"Se ha obtenido la secuencia comprimida optima."
 @end{verbatim}
 
  ").
-
-
-
-
-
-
-
-
-
-
 
 
 
