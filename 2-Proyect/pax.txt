@@ -1,0 +1,151 @@
+Se comprueba caso erroneo en el que Todo es una lista vacia
+
+:- test partir(Todo, Parte1, Parte2) : (Todo=[]) + fails #''No se puede partir una lista vacia''.
+
+Se comprueba caso erroneo en el que Todo es una lista de un elemento
+
+:- test partir(Todo, Parte1, Parte2) : (Todo=[a]) + fails #''No se puede partir una lista con un solo elemento''.
+
+Se comprueba caso valido en el que Todo es una lista con dos elementos (solo debe dar una solucion).
+
+:- test partir(Todo, Parte1, Parte2) : (Todo=[a,b]) + not_fails #''Lista dividida satisfactoriamente''.
+
+Se comprueba caso valido en el que Todo es una lista con 4 elementos (debe dar todas las soluciones).
+
+:- test partir(Todo, Parte1, Parte2) : (Todo=[a,b,c,d]) + not_fails #''Lista dividida satisfactoriamente''.
+@end{verbatim}
+
+@subsection{parentesis(Parte, Num, ParteNum)}
+@begin{verbatim}
+
+Se comprueba caso erroneo en el que Parte no es una lista.
+
+:- test parentesis(Parte, Num, ParteNum) : (Parte=1,Num=1) + fails #''No se puede aplicar parentesis''.
+
+Se comprueba caso erroneo en el que Num no sea un numero.
+
+:- test parentesis(Parte, Num, ParteNum) : (Parte=[a,b,c],Num=a) + fails #''No se puede aplicar parentesis''.
+
+Se comprueba caso valido para el primer ejemplo del enunciado.
+
+:- test parentesis(Parte, Num, ParteNum) : (Parte=[a,b,c],Num=3) + not_fails #''Parentesis aplicado satisfactoriamente''.
+
+Se comprueba caso valido para el segundo ejemplo del enunciado.
+
+:- test parentesis(Parte, Num, ParteNum) : (Parte=[a,b],Num=2) + not_fails #''Parentesis aplicado satisfactoriamente''.
+
+Se comprueba caso valido para el tercer ejemplo del enunciado.
+
+:- test parentesis(Parte, Num, ParteNum) : (Parte=[a],Num=2) + not_fails #''Parentesis aplicado satisfactoriamente''.
+@end{verbatim}
+
+@subsection{se_repite(Cs, Parte, Num0, Num)}
+@begin{verbatim}
+
+Se comprueba caso erroneo en el que Cs no es una lista.
+
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=1,Parte=[a,b],Num0=0) + fails #''No se pudo contar el numero de repeticiones de la subsecuencia''.
+
+Se comprueba caso erroneo en el que Parte no es una lista.
+
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b],Parte=1,Num0=0) + fails #''No se pudo contar el numero de repeticiones de la subsecuencia''.
+
+Se comprueba caso erroneo en el que Parte no es subsecuencia de Cs.
+
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b,a,b],Parte=[c,d],Num0=0) + fails #''No se pudo contar el numero de repeticiones de la subsecuencia''.
+
+Se comprueba caso erroneo en el que Parte no es la unica subsecuencia de Cs.
+
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b,a,b,c],Parte=[a,b],Num0=0) + fails #''No se pudo contar el numero de repeticiones de la subsecuencia''.
+
+Se comprueba caso valido en el que se reconoce una secuencia simple.
+
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,a],Parte=[a],Num0=0) + not_fails #''Secuencia reconocida satisfactoriamente''.
+
+Se comprueba caso valido en el que se reconoce una secuencia de varios caracteres.
+
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b,a,b],Parte=[a,b],Num0=0) + not_fails #''Secuencia reconocida satisfactoriamente''.
+
+Se comprueba caso valido en el que se reconoce una secuencia con para Num0 distinto de 0.
+
+:- test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b,a,b],Parte=[a,b],Num0=5) + not_fails #''Secuencia reconocida satisfactoriamente''.
+@end{verbatim}
+
+@subsection{repeticion(Inicial, Comprimida)}
+@begin{verbatim}
+
+Se comprueba caso erroneo en el que no hay repeticiones.
+
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,b,c]) + fails #''No se pudo comprimir la lista por repeticion''.
+
+Se comprueba caso valido en el que se repite una secuencia de patrones de 3 caracteres.
+
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,b,c,a,b,c,a,b,c]) + not_fails #''Lista comprimida por repeticion satisfactoriamente''.
+
+Se comprueba caso valido en el que se repite una secuencia del mismo caracter.
+
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,a,a,a,a,a]) + not_fails #''Lista comprimida por repeticion satisfactoriamente''.
+
+Se comprueba caso valido en el que se repite una secuencia de patrones de 3 caracteres.
+
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,b,c,a,b,c,a,b,c]) + not_fails #''Lista comprimida por repeticion satisfactoriamente''.
+@end{verbatim}
+
+@subsection{compresion(Inicial, Comprimida)}
+@begin{verbatim}
+
+Junto con las comprobaciones de compresion se puede testear el correcto funcionamiento de division.
+
+Se comprueba caso valido en el que no se puede comprimir por lo que se devuelve la misma secuencia.
+
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,b,c]) + not_fails #''Secuencia comprimida satisfactoriamente (es la misma que la de entrada)''.
+
+Se comprueba caso valido en el que se comprime una secuencia de 3 caracteres 2 veces.
+
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,b,c,a,b,c]) + not_fails #''Secuencia comprimida satisfactoriamente''.
+
+Se comprueba caso valido en el que se combina repeticion y division.
+
+:- test repeticion(Inicial, Comprimida) : (Inicial=[a,b,a,b,a,b,c,c,c]) + not_fails #''Secuencia comprimida satisfactoriamente (es la misma que la de entrada)''.
+@end{verbatim}
+
+@subsection{comprimir(Inicial, Comprimido)}
+@begin{verbatim}
+
+
+Se prueba un caso valido en el que no se puede comprimir por lo que se devuelve la misma secuencia.
+
+:- test comprimir(Inicial, Comprimido) : (Inicial=[a,b,c]) + not_fails #''Se ha obtenido la secuencia comprimida optima''.
+
+Se prueba un caso valido en el que se comprimen secuencias repetidas de 3 caracateres.
+
+:- test comprimir(Inicial, Comprimido) : (Inicial=[a,b,c,a,b,c]) + not_fails #''Se ha obtenido la secuencia comprimida optima''.
+
+Se prueba un caso valido en el que se comprime por repeticion un solo elemento varias veces.
+
+:- test comprimir(Inicial, Comprimido) : (Inicial=[a,a,a,a,a]) + not_fails #''Se ha obtenido la secuencia comprimida optima''.
+
+Se prueba un caso valido en el que se comprime por repeticion y por division varios elementos.
+
+:- test comprimir(Inicial, Comprimido) : (Inicial=[a,b,a,b,a,a,a]) + not_fails #''Se ha obtenido la secuencia comprimida optima''.
+@end{verbatim}
+
+@subsection{mejor_compresion_memo(Inicial, Comprimido)}
+@begin{verbatim}
+
+Se prueba un caso valido en el que no se puede comprimir por lo que se devuelve la misma secuencia.
+
+:- test mejor_compresion_memo(Inicial, Comprimido) : (Inicial=[a,b,c]) + not_fails #''Se ha obtenido la secuencia comprimida optima''.
+
+Se prueba un caso valido en el que se comprimen secuencias repetidas de 3 caracateres.
+
+:- test mejor_compresion_memo(Inicial, Comprimido) : (Inicial=[a,b,c,a,b,c]) + not_fails #''Se ha obtenido la secuencia comprimida optima''.
+
+Se prueba un caso valido en el que se comprime por repeticion un solo elemento varias veces.
+
+:- test mejor_compresion_memo(Inicial, Comprimido) : (Inicial=[a,a,a,a,a]) + not_fails #''Se ha obtenido la secuencia comprimida optima''.
+
+Se prueba un caso valido en el que se comprime por repeticion y por division varios elementos.
+
+:- test mejor_compresion_memo(Inicial, Comprimido) : (Inicial=[a,b,a,b,a,a,a]) + not_fails #''Se ha obtenido la secuencia comprimida optima''.
+@end{verbatim}
