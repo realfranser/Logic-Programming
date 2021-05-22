@@ -1,0 +1,7 @@
+filetype(module).
+main_title([[]]).
+sect([level(0)],global_label("codigo Reference Manual"),[string_esc("codigo"),string_esc(" Reference Manual")]).
+refs_link(codigofulltoc).
+refs_link(codigointro).
+refs_link(codigorefs).
+refs_link(codigosearch).
