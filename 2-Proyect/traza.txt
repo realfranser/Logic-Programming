@@ -17,6 +17,11 @@ tests
               | Processing tests |
               ====================
 [Timeout set to 3.0 sec.]
+{Compiling /deliverit/codigo.pl
+WARNING: (lns 21-21) Unqualified predicate call to memo/1 assumed to local version, calls to predicate imported from basic_props must be qualified
+WARNING: (lns 29-29) Unqualified predicate call to memo/1 assumed to local version, calls to predicate imported from basic_props must be qualified
+WARNING: (lns 81-89) Unqualified predicate call to memo/1 assumed to local version, calls to predicate imported from basic_props must be qualified
+}
 [End of test phase.]
 
               ====================
@@ -26,7 +31,7 @@ tests
 A) Summary results
 ------------------------------------------------------------
 Note: {Total:
-Passed: 73 (85.88%) Failed: 5 (5.88%) Precond Failed: 0 (0.00%) Aborted: 0 (0.00%) Timeouts: 7 (8.24%) Total: 85 Run-Time Errors: 9
+Passed: 75 (88.24%) Failed: 3 (3.53%) Precond Failed: 0 (0.00%) Aborted: 0 (0.00%) Timeouts: 7 (8.24%) Total: 85 Run-Time Errors: 5
 }
 
 In the above, 
@@ -128,17 +133,7 @@ ABORTED: (lns 258-261) comprimir_s/2 "T-C-10: Comprobar compresión mínima comb
 PASSED: (lns 262-266) comprimir_s/2 "T-C-11: Comprimir por repetición (se repite 1 caracter, enumerar soluciones).".
 ABORTED: (lns 267-270) comprimir_s/2 "T-C-12: Combinar comprimir por repetición y división (enumerar soluciones).". Time limit for the test exceeded.
 PASSED: (lns 280-284) mejor_compresion_memo_s/2 "T-Da-01: Inicial no comprimible (enumerar soluciones).".
-FAILED: (lns 285-288) mejor_compresion_memo_s/2 "T-Da-02: Comprobar Inicial = Comprimida si no es comprimible.".
-mejor_compresion_memo_s(_,_) run-time check failure.
-Requires: 
-	num_solutions(1).
-But instead:
-	solutions(0)
-mejor_compresion_memo_s(_1,_2) run-time check failure.
-Requires: 
-	not_fails.
-But instead:
-	exception(rtcheck(rtcheck(comp,mejor_compresion_memo_s(_1,_2),['L'=[a,b,a],'O'=[a,b,a]],num_solutions(1),[solutions(0)],[predloc(mejor_compresion_memo_s(_1,_2),loc('/deliverit/tests.pl',279,279)),asrloc(loc('/deliverit/tests.pl',285,288))])))
+PASSED: (lns 285-288) mejor_compresion_memo_s/2 "T-Da-02: Comprobar Inicial = Comprimida si no es comprimible.".
 PASSED: (lns 289-292) mejor_compresion_memo_s/2 "T-Da-03: Comprimir por repetición (se repiten 3 caracteres, enumerar soluciones).".
 FAILED: (lns 293-296) mejor_compresion_memo_s/2 "T-Da-04: Comprobar compresión mínima por repetición (se repiten 3 caracteres).".
 mejor_compresion_memo_s(_,_) run-time check failure.
@@ -152,17 +147,7 @@ Requires:
 But instead:
 	exception(rtcheck(rtcheck(comp,mejor_compresion_memo_s(_1,_2),['L'=[a,b,c,a,b,c],'O'=[a,b,c,a,b,c]],num_solutions(1),[solutions(0)],[predloc(mejor_compresion_memo_s(_1,_2),loc('/deliverit/tests.pl',279,279)),asrloc(loc('/deliverit/tests.pl',293,296))])))
 PASSED: (lns 297-300) mejor_compresion_memo_s/2 "T-Da-05: Comprimir por repetición (se repiten 2 caracteres, enumerar soluciones).".
-FAILED: (lns 301-304) mejor_compresion_memo_s/2 "T-Da-06: Comprobar compresión mínima por repetición (se repiten 2 caracteres).".
-mejor_compresion_memo_s(_,_) run-time check failure.
-Requires: 
-	num_solutions(1).
-But instead:
-	solutions(0)
-mejor_compresion_memo_s(_1,_2) run-time check failure.
-Requires: 
-	not_fails.
-But instead:
-	exception(rtcheck(rtcheck(comp,mejor_compresion_memo_s(_1,_2),['L'=[a,b,a,b,a,b],'O'=['(',a,b,')',3]],num_solutions(1),[solutions(0)],[predloc(mejor_compresion_memo_s(_1,_2),loc('/deliverit/tests.pl',279,279)),asrloc(loc('/deliverit/tests.pl',301,304))])))
+PASSED: (lns 301-304) mejor_compresion_memo_s/2 "T-Da-06: Comprobar compresión mínima por repetición (se repiten 2 caracteres).".
 PASSED: (lns 305-308) mejor_compresion_memo_s/2 "T-Da-07: Comprimir por repetición (se repite 1 caracter, enumerar soluciones).".
 PASSED: (lns 309-326) correcto_con_memo/1 "T-Db-01: Las soluciones deben ser correctas.".
 PASSED: (lns 327-329) correcto_con_memo/1 "T-Db-02: Las soluciones deben ser correctas.".

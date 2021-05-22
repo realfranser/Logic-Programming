@@ -1,0 +1,5 @@
+filetype(module).
+main_title([[string_esc("Compresion de Secuencias")]]).
+sect([level(0)],global_label("Compresion de Secuencias"),[string_esc("Compresion de Secuencias")]).
+refs_link(codigointro).
+refs_link(codigorefs).

@@ -1,0 +1,58 @@
+\unnumbchapentry{codigo}{1}
+\unnumbsecentry{Predicados y explicacion de algoritmos}{1}
+\unnumbsubsecentry{partir(Todo, Parte1, Parte2)}{1}
+\unnumbsubsecentry{Explicacion partir(Todo, Parte1, Parte2)}{1}
+\unnumbsubsecentry{parentesis(Parte, Num, ParteNum)}{2}
+\unnumbsubsecentry{Explicacion parentesis(Parte, Num, ParteNum)}{2}
+\unnumbsubsecentry{se_repite(Cs, Parte, Num0, Num)}{2}
+\unnumbsubsecentry{Explicacion se_repite(Cs, Parte, Num0, Num)}{2}
+\unnumbsubsecentry{repeticion(Inicial, Comprimida)}{2}
+\unnumbsubsecentry{Explicacion repeticion(Inicial, Comprimida)}{3}
+\unnumbsubsecentry{divison(Inicial, Comprimida)}{3}
+\unnumbsubsecentry{Explicacion division(Inicial, Comprimida)}{3}
+\unnumbsubsecentry{compresion(Inicial, Comprimida)}{3}
+\unnumbsubsecentry{Explicacion compresion(Inicial, Comprimida)}{4}
+\unnumbsubsecentry{mejor_compresion(Inicial, Comprimida)}{4}
+\unnumbsubsecentry{Explicacion mejor_compresion(Inicial, Comprimida)}{4}
+\unnumbsubsecentry{mejor_compresion_memo(Inicial, Comprimida)}{4}
+\unnumbsubsecentry{Explicacion mejor_compresion_memo(Inicial, Comprimida)}{5}
+\unnumbsecentry{Predicados Auxiliares}{5}
+\unnumbsubsecentry{get_all_compresions(Inicial, Comprimido)}{5}
+\unnumbsubsecentry{Explicacion get_all_compresions(Inicial, Comprimida)}{5}
+\unnumbsubsecentry{store_result(X)}{6}
+\unnumbsubsecentry{Explicacion store_result(X)}{6}
+\unnumbsubsecentry{limpia_memo}{6}
+\unnumbsubsecentry{Explicacion limpia_memo}{6}
+\unnumbsubsecentry{head(List, Head)}{6}
+\unnumbsubsecentry{Explicacion head(List, Head)}{6}
+\unnumbsecentry{Casos de prueba}{7}
+\unnumbsubsecentry{partir(Todo, Parte1, Parte2)}{7}
+\unnumbsubsecentry{parentesis(Parte, Num, ParteNum)}{7}
+\unnumbsubsecentry{se_repite(Cs, Parte, Num0, Num)}{8}
+\unnumbsubsecentry{repeticion(Inicial, Comprimida)}{9}
+\unnumbsubsecentry{compresion(Inicial, Comprimida)}{9}
+\unnumbsubsecentry{comprimir(Inicial, Comprimido)}{10}
+\unnumbsubsecentry{mejor_compresion_memo(Inicial, Comprimido)}{11}
+\unnumbsecentry{Usage and interface}{11}
+\unnumbsecentry{Documentation on exports}{12}
+\unnumbsubsubsecentry{alumno\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}prode/4 (pred)}{12}
+\unnumbsubsubsecentry{memo/1 (pred)}{12}
+\unnumbsubsubsecentry{limpia\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}memo/0 (pred)}{12}
+\unnumbsubsubsecentry{store\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}result/1 (pred)}{12}
+\unnumbsubsubsecentry{compresion\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}recursiva/2 (pred)}{12}
+\unnumbsubsubsecentry{mejor\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}compresion\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}memo/2 (pred)}{12}
+\unnumbsubsubsecentry{comprimir/2 (pred)}{12}
+\unnumbsubsubsecentry{mejor\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}compresion/2 (pred)}{13}
+\unnumbsubsubsecentry{get\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}all\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}compresions/2 (pred)}{13}
+\unnumbsubsubsecentry{sub\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}compresion\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}recursiva/2 (pred)}{13}
+\unnumbsubsubsecentry{partir/3 (pred)}{13}
+\unnumbsubsubsecentry{parentesis/3 (pred)}{14}
+\unnumbsubsubsecentry{se\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}repite/4 (pred)}{14}
+\unnumbsubsubsecentry{repeticion/2 (pred)}{14}
+\unnumbsubsubsecentry{compresion/2 (pred)}{14}
+\unnumbsubsubsecentry{division/2 (pred)}{15}
+\unnumbsubsubsecentry{head/2 (pred)}{15}
+\unnumbsecentry{Documentation on multifiles}{15}
+\unnumbsubsubsecentry{^^Fcall\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}in\unhbox \voidb@x \kern .06em \vbox {\hrule width.3em height.1ex}module/2 (pred)}{15}
+\unnumbsecentry{Documentation on imports}{15}
+\unnumbchapentry{References}{17}
