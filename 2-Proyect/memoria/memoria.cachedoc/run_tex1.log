@@ -1,0 +1,55 @@
+This is TeXk, Version 3.14159265 (TeX Live 2019/Debian) (preloaded format=tex)
+
+(./memoria.texic (./texinfo.tex Loading texinfo package [Version 2.257]:
+Basics, fonts, page headings, tables, indexing, sectioning, toc, environments,
+defuns, macros, cross references, paper sizes,
+and turning on texinfo input format.) [1] [2] [-1] (./memoriaintro.texic
+(memoria) [1] [2] [3]
+Overfull \hbox (85.29668pt too wide) in paragraph at lines 133--133
+ @texttt cado @var{findall/3} desde el que se llama a @var{get_all_compresions/
+2} para obtener to-|
+[4]
+Overfull \hbox (183.02437pt too wide) in paragraph at lines 163--163
+ @texttt mato Key, Value siendo Key el tamao de la lista y value la lista en si
+. @includedef{get_all_compresions/2}[] |
+[5] [6]
+Overfull \hbox (79.54799pt too wide) in paragraph at lines 250--250
+ @texttt sis(Parte, Num, ParteNum) : (Parte=1,Num=1) + fails #''No se puede apl
+icar parentesis''.[] |
+
+Overfull \hbox (114.04012pt too wide) in paragraph at lines 254--254
+ @texttt sis(Parte, Num, ParteNum) : (Parte=[a,b,c],Num=a) + fails #''No se pue
+de aplicar parentesis''.[] |
+[7]
+Overfull \hbox (96.79405pt too wide) in paragraph at lines 275--275
+ @texttt test se_repite(Cs, Parte, Num0, Num) : (Cs=1,Parte=[a,b],Num0=0) + fai
+ls #''No se pudo con-|
+
+Overfull \hbox (96.79405pt too wide) in paragraph at lines 279--279
+ @texttt test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b],Parte=1,Num0=0) + fai
+ls #''No se pudo con-|
+
+Overfull \hbox (142.78355pt too wide) in paragraph at lines 283--283
+ @texttt test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b,a,b],Parte=[c,d],Num0=
+0) + fails #''No se pudo con-|
+
+Overfull \hbox (154.28093pt too wide) in paragraph at lines 287--287
+ @texttt test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b,a,b,c],Parte=[a,b],Num
+0=0) + fails #''No se pudo con-|
+
+Overfull \hbox (62.30193pt too wide) in paragraph at lines 291--291
+ @texttt test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,a],Parte=[a],Num0=0) + n
+ot_fails #''Se-|
+[8]
+Overfull \hbox (96.79405pt too wide) in paragraph at lines 295--295
+ @texttt test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b,a,b],Parte=[a,b],Num0=
+0) + not_fails #''Se-|
+
+Overfull \hbox (96.79405pt too wide) in paragraph at lines 299--299
+ @texttt test se_repite(Cs, Parte, Num0, Num) : (Cs=[a,b,a,b],Parte=[a,b],Num0=
+5) + not_fails #''Se-|
+[9] [10] [11] [12] [13] [14] [15]) (./memoriarefs.texic (References) [16])
+[17] [18] )
+(see the transcript file for additional information)
+Output written on memoria.dvi (21 pages, 35696 bytes).
+Transcript written on memoria.log.

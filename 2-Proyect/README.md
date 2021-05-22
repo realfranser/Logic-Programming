@@ -1,15 +1,37 @@
-[☰](#)
 
-[↑](codigo.html)[←](codigofulltoc.html)[→](codigorefs.html)[🔍](codigosearch.html)[TOC](codigofulltoc.html)
+codigo
+======
 
-* * * * *
+Compresion de Secuencias es un programa desarrollado con el lenguaje de
+programacion Ciao Prolog. Este lenguaje de programacion forma parte del
+paradigma de la programacion logica el cual se estudia en la asignatura
+de Programacion Declarativa: Logica y restricciones de la ETSIINF UPM.
 
--   [Compresion de Secuencias](codigo.html) »\
--   [**codigo**]()
-
-* * * * *
-
-*ON THIS PAGE*
+El proyecto consiste en la contruccion de un programa que permita
+comprimir secuencias de caracteres en secuencias que definan de forma
+mas compacta las mismas. Así, la secuencia aaaaaaa se comprime en a7. La
+secuencia original es de longitud siete, la comprimida tiene solo
+longitud dos. La secuencia ababab, de longitud seis, se comprime en
+(ab)3, de longitud cinco. Nótese que los paréntesis se cuentan también
+como caracteres de la secuencia. Solo hacen falta paréntesis si la
+subsecuencia que se repite es de más de un carácter. Para comprimir
+secuencias complejas, se hace una division de tal manera que se pueda
+comprimir las partes divididas para luego juntarlas en el resultado
+final de la compresion. Por ejemplo, la secuencia aaaaaaa se comprime en
+la secuencia a7. En la compresión por división se divide la secuencia
+original en dos partes que a su vez se comprimen por separado y se unen
+los resultados. Por ejemplo, la secuencia aaaaaaabbbbbbb se comprime en
+a7b7 (comprimiendo cada parte, a su vez, por repetición). La secuencia
+aaabaaab se comprime por repetición en (a3b)2 donde la subsecuencia aaab
+se ha comprimido en a3b por división (y a su vez aaa en a3 por
+repetición). Los resultados de la compresión (tanto de la secuencia
+original como de sus subsecuencias) han de ser más cortos que las
+secuencias iniciales. Así, no es admisible comprimir aa en a2, porque
+tienen la misma longitud, ni abab en (ab)2, porque esta última es más
+larga. Las secuencias se representaran como listas de caracteres. Por
+ejemplo, aaa es [a,a,a] y (ab)3 es [’(’,a,b,’)’,3]. En estas listas los
+números ocupan una única posición, tengan el numero de dígitos que
+tengan. Así, a12 es la lista [a,12] y tiene longitud dos (no tres).
 
 [Predicados y explicacion de
 algoritmos](#Predicados%20y%20explicacion%20de%20algoritmos)
@@ -81,39 +103,6 @@ algoritmos](#Predicados%20y%20explicacion%20de%20algoritmos)
 
 [Documentation on imports](#Documentation%20on%20imports)
 
-codigo
-======
-
-Compresion de Secuencias es un programa desarrollado con el lenguaje de
-programacion Ciao Prolog. Este lenguaje de programacion forma parte del
-paradigma de la programacion logica el cual se estudia en la asignatura
-de Programacion Declarativa: Logica y restricciones de la ETSIINF UPM.
-
-El proyecto consiste en la contruccion de un programa que permita
-comprimir secuencias de caracteres en secuencias que definan de forma
-mas compacta las mismas. Así, la secuencia aaaaaaa se comprime en a7. La
-secuencia original es de longitud siete, la comprimida tiene solo
-longitud dos. La secuencia ababab, de longitud seis, se comprime en
-(ab)3, de longitud cinco. Nótese que los paréntesis se cuentan también
-como caracteres de la secuencia. Solo hacen falta paréntesis si la
-subsecuencia que se repite es de más de un carácter. Para comprimir
-secuencias complejas, se hace una division de tal manera que se pueda
-comprimir las partes divididas para luego juntarlas en el resultado
-final de la compresion. Por ejemplo, la secuencia aaaaaaa se comprime en
-la secuencia a7. En la compresión por división se divide la secuencia
-original en dos partes que a su vez se comprimen por separado y se unen
-los resultados. Por ejemplo, la secuencia aaaaaaabbbbbbb se comprime en
-a7b7 (comprimiendo cada parte, a su vez, por repetición). La secuencia
-aaabaaab se comprime por repetición en (a3b)2 donde la subsecuencia aaab
-se ha comprimido en a3b por división (y a su vez aaa en a3 por
-repetición). Los resultados de la compresión (tanto de la secuencia
-original como de sus subsecuencias) han de ser más cortos que las
-secuencias iniciales. Así, no es admisible comprimir aa en a2, porque
-tienen la misma longitud, ni abab en (ab)2, porque esta última es más
-larga. Las secuencias se representaran como listas de caracteres. Por
-ejemplo, aaa es [a,a,a] y (ab)3 es [’(’,a,b,’)’,3]. En estas listas los
-números ocupan una única posición, tengan el numero de dígitos que
-tengan. Así, a12 es la lista [a,12] y tiene longitud dos (no tres).
 
 A continuacion, se detalla el codigo y los predicados utilizados para la
 resolucion de el enunciado anteriormente expuesto junto con un set de
